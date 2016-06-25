@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/bin/bash -x
 
 source ./variables.conf
 XMPP_IP=/sbin/ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'
 BROKER_IP=/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'
+INSTALLER_HOME=$(dirname "$0")
 
 install_dependencies() {
     echo 'deb http://pkg.mytestbed.net/ubuntu precise/ ' >> /etc/apt/sources.list \
@@ -94,6 +95,8 @@ configure_testbed() {
 
     ##START OF - COPING CONFIGURATION FILES
     echo "###############COPYING CONFIGURATION FILES TO THE RIGHT PLACE###############"
+    cp -rf /etc/dnsmasq.conf /etc/dnsmasq.conf.bkp
+    cd $INSTALLER_HOME
     cp -r ./config-files/* /
     ##END OF - COPING CONFIGURATION FILES
 
@@ -102,8 +105,6 @@ configure_testbed() {
     ln -s /usr/lib/syslinux/pxelinux.0 /tftpboot/
     ln -s /tftpboot/pxelinux.cfg/pxeconfig /tftpboot/pxelinux.cfg/01-00:03:1d:0c:23:46
     ln -s /tftpboot/pxelinux.cfg/pxeconfig /tftpboot/pxelinux.cfg/01-00:03:1d:0c:47:48
-    cp -rf /etc/dnsmasq.conf /etc/dnsmasq.conf.bkp
-    cp -rf /root/dnsmasq.conf /etc/dnsmasq.conf
     cat /root/hosts >> /etc/hosts
     #END OF PXE CONFIGURATION
 }
@@ -153,7 +154,7 @@ install_docker() {
         rm -rf /etc/apt/sources.list.d/docker.list
     fi
 
-    echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" >> /etc/apt/sources.list.d/docker.list \
+    echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" > /etc/apt/sources.list.d/docker.list \
     && apt-get update \
     && apt-get install -y --force-yes apt-transport-https ca-certificates \
     && apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D \

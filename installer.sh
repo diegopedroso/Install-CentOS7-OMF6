@@ -3,7 +3,7 @@
 source ./variables.conf
 XMPP_IP=/sbin/ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'
 BROKER_IP=/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'
-INSTALLER_HOME=$(dirname "$0")
+INSTALLER_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 install_dependencies() {
     echo 'deb http://pkg.mytestbed.net/ubuntu precise/ ' >> /etc/apt/sources.list \
@@ -117,8 +117,8 @@ start_broker() {
 start_nitos_rcs() {
     echo "Executing NITOS Testbed RCs"
 
-    user_proxy &> /var/log/ntrc/user_proxy.log &
-    frisbee_proxy &> /var/log/ntrc/frisbee_proxy.log &
+    user_proxy &> /var/log/ntrc/user_proxy.log & \
+    frisbee_proxy &> /var/log/ntrc/frisbee_proxy.log & \
     cm_proxy &> /var/log/ntrc/cm_proxy.log &
 }
 
@@ -194,8 +194,10 @@ install_testbed() {
     install_nitos_rcs
     configure_testbed
 
-    #start_broker
-    #start_nitos_rcs
+    echo "Configure XMPP Server before start"
+    firefox http://localhost:9090
+    start_broker
+    start_nitos_rcs
 }
 
 main() {

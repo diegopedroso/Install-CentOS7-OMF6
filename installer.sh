@@ -1,9 +1,9 @@
 #!/bin/bash -x
 
-source ./variables.conf
-XMPP_IP=/sbin/ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'
-BROKER_IP=/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'
 INSTALLER_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $INSTALLER_HOME/variables.conf
+XMPP_IP=$(/sbin/ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
+BROKER_IP=$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
 
 install_dependencies() {
     echo 'deb http://pkg.mytestbed.net/ubuntu precise/ ' >> /etc/apt/sources.list \
@@ -45,6 +45,8 @@ install_broker() {
         #Start of Broker installation
         echo "###############GIT CLONE OMF_SFA REPOSITORY###############"
         cd /root
+        echo $(pwd)
+        echo $OMF_SFA_HOME
         git clone https://github.com/viniciusgb4/omf_sfa.git
         cd $OMF_SFA_HOME
         echo "###############INSTALLING OMF_SFA###############"

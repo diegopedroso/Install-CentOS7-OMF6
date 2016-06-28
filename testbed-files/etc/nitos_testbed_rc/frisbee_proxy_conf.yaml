@@ -49,4 +49,4 @@
 
   # Local interface to bind to for frisbee traffic
   #multicastIF: 192.168.204.1
-  :multicastIF: 10.0.0.200
+  :multicastIF: <xmppserver>

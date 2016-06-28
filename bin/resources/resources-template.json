@@ -1,0 +1,35 @@
+{
+  "name": "<name>",
+  "hostname": "<name>",
+  "urn": "urn:publicid:IDN+<domain>+node+<name>",
+  "interfaces_attributes": [
+    {
+      "name": "<name>:if0",
+      "role": "control",
+      "mac": "<mac-if0>",
+      "ips_attributes": [
+        {
+          "address": "<ip-if0>",
+          "netmask": "255.255.0.0",
+          "ip_type": "ipv4"
+        }
+      ]
+    },
+    {
+      "name": "<name>:if1",
+      "role": "experimental",
+      "mac": "<mac-if1>"
+    }
+  ],
+  "cmc_attributes": {
+    "name": "<name>:cm",
+    "mac": "<mac-cmc>",
+    "ip_attributes": {
+      "address": "<ip-cmc>",
+      "netmask": "255.255.255.0",
+      "ip_type": "ipv4"
+    }
+  },
+  "domain": "<domain>",
+  "gateway": "<ip-gateway>"
+}

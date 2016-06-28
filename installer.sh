@@ -1,9 +1,7 @@
-#!/bin/bash -x
+#!/bin/bash
 
 INSTALLER_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $INSTALLER_HOME/variables.conf
-XMPP_IP=$(/sbin/ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
-BROKER_IP=$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
 
 install_dependencies() {
     echo 'deb http://pkg.mytestbed.net/ubuntu precise/ ' >> /etc/apt/sources.list \
@@ -99,7 +97,7 @@ configure_testbed() {
     echo "###############COPYING CONFIGURATION FILES TO THE RIGHT PLACE###############"
     cp -rf /etc/dnsmasq.conf /etc/dnsmasq.conf.bkp
     cd $INSTALLER_HOME
-    cp -r ./config-files/* /
+    cp -r ./testbed-files/* /
     ##END OF - COPING CONFIGURATION FILES
 
     #START OF PXE CONFIGURATION
@@ -107,6 +105,7 @@ configure_testbed() {
     ln -s /usr/lib/syslinux/pxelinux.0 /tftpboot/
     ln -s /tftpboot/pxelinux.cfg/pxeconfig /tftpboot/pxelinux.cfg/01-00:03:1d:0c:23:46
     ln -s /tftpboot/pxelinux.cfg/pxeconfig /tftpboot/pxelinux.cfg/01-00:03:1d:0c:47:48
+
     cat /root/hosts >> /etc/hosts
     #END OF PXE CONFIGURATION
 }
@@ -187,6 +186,7 @@ install_xmpp_server() {
 }
 
 install_testbed() {
+    INSTALLER_HOME/configure.sh
     install_dependencies
     install_docker
     install_docker_compose

@@ -18,6 +18,7 @@ install_dependencies() {
        libxml2-dev \
        libxmlsec1-dev \
        libxslt-dev \
+       links2 \
        ntp \
        syslinux \
        xmlsec1 \
@@ -197,7 +198,7 @@ install_testbed() {
     configure_testbed
 
     echo "Configure XMPP Server before start"
-    firefox http://localhost:9090
+    links2 http://localhost:9090
     start_broker
     start_nitos_rcs
 }

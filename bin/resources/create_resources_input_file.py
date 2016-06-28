@@ -1,11 +1,13 @@
 import json
 import sys
 
-nodes_file_name = sys.argv[0]
+nodes_file_name = sys.argv[1]
+resources_template_file_name = sys.argv[2]
+resources_file_name = sys.argv[3]
 
-template_file = open('resources-template.json', 'r')
+template_file = open(resources_template_file_name, 'r')
 nodes_file = open(nodes_file_name, 'r')
-resources_file = open('resources.json', 'w')
+resources_file = open(resources_file_name, 'w')
 
 resources_template = ""
 
@@ -14,7 +16,7 @@ for line in template_file:
 
 all_nodes = ""
 
-for idx, line in enumerate(open('nodes.conf', 'r')):
+for idx, line in enumerate(nodes_file):
     if not line.startswith("#"):
         node_parts = line.split(", ")
         node = resources_template.replace("<name>", node_parts[0])

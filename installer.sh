@@ -200,11 +200,12 @@ install_testbed() {
     install_dependencies
     install_docker
     install_docker_compose
-    #install_amqp_server
+    install_amqp_server
     install_xmpp_server
     install_broker
     install_nitos_rcs
     configure_testbed
+    install_ec
 
     echo "Configure XMPP Server before start"
     links2 http://localhost:9090

@@ -68,9 +68,9 @@ set_resources_file() {
 }
 
 main() {
+    set_resources_file
     add_hosts_config
     set_ips
-    set_resources_file
 }
 
 main

@@ -184,7 +184,7 @@ install_docker_compose() {
 }
 
 install_amqp_server() {
-    apt-get install rabbitmq-server
+    apt-get install  -y --force-yes rabbitmq-server
     echo "$AMQP_DOMAIN  amqp_server" >> /etc/hosts
 }
 

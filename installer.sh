@@ -196,7 +196,7 @@ install_xmpp_server() {
 
 download_baseline_image() {
     mkdir /root/omf-images
-    wget -o /root/omf-images/baseline.ndz https://www.dropbox.com/s/q7wrf5jtnirff28/baseline.ndz?dl=0
+    wget https://www.dropbox.com/s/q7wrf5jtnirff28/baseline.ndz?dl=0 -O /root/omf-images/baseline2.ndz
 }
 
 install_testbed() {
@@ -217,7 +217,10 @@ install_testbed() {
     links2 http://localhost:9090
     start_broker
     start_nitos_rcs
-    
+
+    echo "Waiting for services start up..."
+    sleep 5s
+
     echo -n "Do you want to insert the resources into Broker? (Y/n)"
     read option
     case $option in

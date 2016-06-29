@@ -18,6 +18,7 @@ install_dependencies() {
        libxml2-dev \
        libxmlsec1-dev \
        libxslt-dev \
+       links2 \
        ntp \
        syslinux \
        xmlsec1 \
@@ -73,6 +74,18 @@ install_broker() {
     fi
 }
 
+uninstall_broker() {
+    bundle exec ruby -I lib lib/omf-sfa/am/am_server.rb stop
+    rm -rf $OMF_SFA_HOME
+    echo "Uninstall NITOS Testbed RCs?"
+    read option
+    case $option in
+        y) unistall_nitos_rcs ;;
+        Y) unistall_nitos_rcs ;;
+        *) ;;
+    esac
+}
+
 install_nitos_rcs() {
     if ! gem list nitos_testbed_rc -i; then
         #Start of NITOS Testbed RCs installation
@@ -89,6 +102,20 @@ install_nitos_rcs() {
         ##END OF CERTIFICATES CONFIGURATION
         #End of NITOS Testbed RCs installation
     fi
+}
+
+uninstall_nitos_rcs() {
+    gem unistall nitos_testbed_rc
+    rm -rf /root/.omf
+    rm -rf /etc/nitos_testbed_rc
+}
+
+install_ec() {
+    gem install omf_ec --no-ri --no-rdoc
+}
+
+uninstall_ec() {
+    gem unistall omf_ec
 }
 
 configure_testbed() {
@@ -112,6 +139,7 @@ configure_testbed() {
 
 start_broker() {
     echo "Executing omf_sfa"
+    cd $OMF_SFA_HOME
     bundle exec ruby -I lib lib/omf-sfa/am/am_server.rb start &> /var/log/omf-sfa.log &
 }
 
@@ -129,24 +157,6 @@ insert_nodes() {
 
 log_broker() {
     tail -f /var/log/omf-sfa.log
-}
-
-uninstall_broker() {
-    bundle exec ruby -I lib lib/omf-sfa/am/am_server.rb stop
-    rm -rf $OMF_SFA_HOME
-    echo "Uninstall NITOS Testbed RCs?"
-    read opcao
-    case $opcao in
-        y) unistall_nitos_rcs ;;
-        Y) unistall_nitos_rcs ;;
-        *) ;;
-    esac
-}
-
-unistall_nitos_rcs() {
-    gem unistall nitos_testbed_rc
-    rm -rf /root/.omf
-    rm -rf /etc/nitos_testbed_rc
 }
 
 install_docker() {
@@ -174,8 +184,7 @@ install_docker_compose() {
 }
 
 install_amqp_server() {
-    apt-get install rabbitmq-server
-    echo "$AMQP_DOMAIN  amqp_server" >> /etc/hosts
+    apt-get install  -y --force-yes rabbitmq-server
 }
 
 install_xmpp_server() {
@@ -186,41 +195,60 @@ install_xmpp_server() {
 }
 
 install_testbed() {
-    INSTALLER_HOME/configure.sh
+    $INSTALLER_HOME/configure.sh
     install_dependencies
     install_docker
     install_docker_compose
-    #install_amqp_server
+    install_amqp_server
     install_xmpp_server
     install_broker
     install_nitos_rcs
     configure_testbed
+    install_ec
+
+    service dnsmasq restart
 
     echo "Configure XMPP Server before start"
-    firefox http://localhost:9090
+    links2 http://localhost:9090
     start_broker
     start_nitos_rcs
+    
+    echo -n "Do you want to insert the resources into Broker? (Y/n)"
+    read option
+    case $option in
+        y) insert_nodes ;;
+        Y) insert_nodes ;;
+        n) exit ;;
+        N) exit ;;
+        *) insert_nodes;;
+    esac
 }
 
 main() {
     echo "------------------------------------------"
-    echo "Opções:"
+    echo "Options:"
     echo
     echo "1. Install Testbed"
     echo "2. Install only Broker"
     echo "3. Install only NITOS Testbed RCs"
     echo "4. Uninstall Broker"
     echo "5. Uninstall NITOS Testbed RCs"
-    echo "6. Exit"
+    echo "6. Insert resources into Broker"
+    echo "7. Install EC"
+    echo "8. Uninstall EC"
+    echo "9. Exit"
     echo
     echo -n "Choose an option..."
-    read opcao
-    case $opcao in
+    read option
+    case $option in
     1) install_testbed ;;
     2) install_broker ;;
     3) install_nitos_rcs ;;
     4) uninstall_broker ;;
-    5) unistall_nitos_rcs ;;
+    5) uninstall_nitos_rcs ;;
+    6) insert_nodes ;;
+    7) install_ec ;;
+    8) uninstall_ec ;;
     *) exit ;;
     esac
 }

@@ -1,2 +1,3 @@
-<brokerip> broker
-<xmppserver>  xmppserver
+<broker>    broker
+<amqpserver>    amqpserver
+<xmppserver>    xmppserver

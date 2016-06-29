@@ -14,7 +14,7 @@ fi
 
 add_hosts_config() {
     oldIFS=$IFS
-
+    echo $'\n' >> $INSTALLER_HOME/testbed-files/root/hosts
     while read line; do
         IFS=', ' read -r -a array <<< "$line"
         if [[ ${array[0]} != *"#"* ]]; then

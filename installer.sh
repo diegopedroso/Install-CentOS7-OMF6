@@ -74,6 +74,18 @@ install_broker() {
     fi
 }
 
+uninstall_broker() {
+    bundle exec ruby -I lib lib/omf-sfa/am/am_server.rb stop
+    rm -rf $OMF_SFA_HOME
+    echo "Uninstall NITOS Testbed RCs?"
+    read option
+    case $option in
+        y) unistall_nitos_rcs ;;
+        Y) unistall_nitos_rcs ;;
+        *) ;;
+    esac
+}
+
 install_nitos_rcs() {
     if ! gem list nitos_testbed_rc -i; then
         #Start of NITOS Testbed RCs installation
@@ -90,6 +102,20 @@ install_nitos_rcs() {
         ##END OF CERTIFICATES CONFIGURATION
         #End of NITOS Testbed RCs installation
     fi
+}
+
+uninstall_nitos_rcs() {
+    gem unistall nitos_testbed_rc
+    rm -rf /root/.omf
+    rm -rf /etc/nitos_testbed_rc
+}
+
+install_ec() {
+    gem install omf_ec --no-ri --no-rdoc
+}
+
+uninstall_ec() {
+    gem unistall omf_ec
 }
 
 configure_testbed() {
@@ -131,24 +157,6 @@ insert_nodes() {
 
 log_broker() {
     tail -f /var/log/omf-sfa.log
-}
-
-uninstall_broker() {
-    bundle exec ruby -I lib lib/omf-sfa/am/am_server.rb stop
-    rm -rf $OMF_SFA_HOME
-    echo "Uninstall NITOS Testbed RCs?"
-    read option
-    case $option in
-        y) unistall_nitos_rcs ;;
-        Y) unistall_nitos_rcs ;;
-        *) ;;
-    esac
-}
-
-unistall_nitos_rcs() {
-    gem unistall nitos_testbed_rc
-    rm -rf /root/.omf
-    rm -rf /etc/nitos_testbed_rc
 }
 
 install_docker() {
@@ -223,7 +231,10 @@ main() {
     echo "3. Install only NITOS Testbed RCs"
     echo "4. Uninstall Broker"
     echo "5. Uninstall NITOS Testbed RCs"
-    echo "6. Exit"
+    echo "6. Insert resources into Broker"
+    echo "7. Install EC"
+    echo "8. Uninstall EC"
+    echo "9. Exit"
     echo
     echo -n "Choose an option..."
     read option
@@ -232,7 +243,10 @@ main() {
     2) install_broker ;;
     3) install_nitos_rcs ;;
     4) uninstall_broker ;;
-    5) unistall_nitos_rcs ;;
+    5) uninstall_nitos_rcs ;;
+    6) insert_nodes ;;
+    7) install_ec ;;
+    8) uninstall_ec ;;
     *) exit ;;
     esac
 }

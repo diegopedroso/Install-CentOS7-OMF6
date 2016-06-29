@@ -2,14 +2,14 @@
 
 INSTALLER_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 XMPP_IP=$(/sbin/ifconfig eth1 | grep 'inet end.:' | cut -d: -f2 | awk '{ print $1}')
-BROKER_IP=$(/sbin/ifconfig eth0 | grep 'inet end.:' | cut -d: -f2 | awk '{ print $1}')
+BROKER_AMQP_IP=$(/sbin/ifconfig eth0 | grep 'inet end.:' | cut -d: -f2 | awk '{ print $1}')
 
 if [ -z "$XMPP_IP" -a "$XMPP_IP" == " " ]; then
     XMPP_IP=$(/sbin/ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
 fi
 
-if [ -z "$BROKER_IP" -a "$BROKER_IP" == " " ]; then
-    BROKER_IP=$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
+if [ -z "$BROKER_AMQP_IP" -a "$BROKER_AMQP_IP" == " " ]; then
+    BROKER_AMQP_IP=$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
 fi
 
 add_hosts_config() {
@@ -26,7 +26,8 @@ add_hosts_config() {
 }
 
 set_ips() {
-    find $INSTALLER_HOME/testbed-files -type f -exec sed -i "s/<broker>/$BROKER_IP/g" {} +
+    find $INSTALLER_HOME/testbed-files -type f -exec sed -i "s/<broker>/$BROKER_AMQP_IP/g" {} +
+    find $INSTALLER_HOME/testbed-files -type f -exec sed -i "s/<amqpserver>/$BROKER_AMQP_IP/g" {} +
     find $INSTALLER_HOME/testbed-files -type f -exec sed -i "s/<xmppserver>/$XMPP_IP/g" {} +
 }
 

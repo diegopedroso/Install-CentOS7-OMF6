@@ -194,6 +194,11 @@ install_xmpp_server() {
     docker-compose up -d pubsub
 }
 
+download_baseline_image() {
+    mkdir /root/omf-images
+    wget -o /root/omf-images/baseline.ndz https://www.dropbox.com/s/q7wrf5jtnirff28/baseline.ndz?dl=0
+}
+
 install_testbed() {
     $INSTALLER_HOME/configure.sh
     install_dependencies
@@ -218,9 +223,19 @@ install_testbed() {
     case $option in
         y) insert_nodes ;;
         Y) insert_nodes ;;
+        n) ;;
+        N) ;;
+        *) insert_nodes;;
+    esac
+
+    echo -n "Do you want to download the baseline image for icarus nodes? (Y/n)"
+    read option
+    case $option in
+        y) download_baseline_image ;;
+        Y) download_baseline_image ;;
         n) exit ;;
         N) exit ;;
-        *) insert_nodes;;
+        *) download_baseline_image;;
     esac
 }
 

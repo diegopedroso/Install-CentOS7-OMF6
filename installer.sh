@@ -206,6 +206,8 @@ install_testbed() {
     configure_testbed
     install_ec
 
+    service dnsmasq restart
+
     echo "Configure XMPP Server before start"
     links2 http://localhost:9090
     start_broker

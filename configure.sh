@@ -14,9 +14,12 @@ fi
 
 add_hosts_config() {
     oldIFS=$IFS
+
     while read line; do
         IFS=', ' read -r -a array <<< "$line"
-        echo "${array[1]}   ${array[0]}" >> $INSTALLER_HOME/testbed-files/root/hosts
+        if [[ ${array[0]} != *"#"* ]]; then
+            echo "${array[1]}   ${array[0]}" >> $INSTALLER_HOME/testbed-files/root/hosts
+        fi
         IFS=$'n'
     done < $INSTALLER_HOME/conf/nodes.conf
     IFS=$old_IFS

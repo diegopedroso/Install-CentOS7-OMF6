@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 INSTALLER_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $INSTALLER_HOME/variables.conf

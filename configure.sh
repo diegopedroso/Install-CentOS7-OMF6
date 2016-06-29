@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 INSTALLER_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 XMPP_IP=$(/sbin/ifconfig eth1 | grep 'inet end.:' | cut -d: -f2 | awk '{ print $1}')

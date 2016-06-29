@@ -3,7 +3,7 @@
 INSTALLER_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 BROKER_INTERFACE="eth0"
-AMQP_INTERFACE="eth1"
+AMQP_INTERFACE="eth0"
 XMPP_INTERFACE="eth1"
 
 add_hosts_config() {
@@ -24,11 +24,11 @@ set_service_interface() {
 
     while read line; do
         IFS='=' read -r -a array <<< "$line"
-        if [[ ${array[0]} = *"<broker>"* ]]; then
+        if [[ ${array[0]} = *"broker"* ]]; then
             BROKER_INTERFACE=${array[1]}
-        elif [[ ${array[0]} = *"<amqpserver>"* ]]; then
+        elif [[ ${array[0]} = *"amqpserver"* ]]; then
             AMQP_INTERFACE=${array[1]}
-        elif [[ ${array[0]} = *"<xmppserver>"* ]]; then
+        elif [[ ${array[0]} = *"xmppserver"* ]]; then
             XMPP_INTERFACE=${array[1]}
         fi
         IFS=$'n'

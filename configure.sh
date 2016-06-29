@@ -15,8 +15,8 @@ add_hosts_config() {
 }
 
 set_ips() {
-    find $INSTALLER_HOME/config-files -type f -exec sed -i "s/<broker>/\BROKER_IP/g" {} +
-    find $INSTALLER_HOME/config-files -type f -exec sed -i "s/<xmppserver>/\$XMPP_IP/g" {} +
+    find $INSTALLER_HOME/testbed-files -type f -exec sed -i "s/<broker>/\BROKER_IP/g" {} +
+    find $INSTALLER_HOME/testbed-files -type f -exec sed -i "s/<xmppserver>/\XMPP_IP/g" {} +
 }
 
 set_resources_file() {

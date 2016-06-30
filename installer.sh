@@ -145,10 +145,7 @@ start_broker() {
 
 start_nitos_rcs() {
     echo "Executing NITOS Testbed RCs"
-
-    user_proxy &> /var/log/ntrc/user_proxy.log & \
-    frisbee_proxy &> /var/log/ntrc/frisbee_proxy.log & \
-    cm_proxy &> /var/log/ntrc/cm_proxy.log &
+    start ntrc
 }
 
 insert_nodes() {

@@ -20,6 +20,7 @@ install_dependencies() {
        libxslt-dev \
        links2 \
        ntp \
+       python \
        syslinux \
        xmlsec1 \
        wget \

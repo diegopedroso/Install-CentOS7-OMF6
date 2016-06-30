@@ -43,15 +43,15 @@ set_ips() {
     BROKER_IP=$(/sbin/ifconfig $BROKER_INTERFACE | grep 'inet end.:' | cut -d: -f2 | awk '{ print $1}')
     AMQP_IP=$(/sbin/ifconfig $AMQP_INTERFACE | grep 'inet end.:' | cut -d: -f2 | awk '{ print $1}')
 
-    if [ -z "$XMPP_IP" -a "$XMPP_IP" == " " ]; then
+    if [ -z "$XMPP_IP" -o "$XMPP_IP" == " " ]; then
         XMPP_IP=$(/sbin/ifconfig $XMPP_INTERFACE | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
     fi
 
-    if [ -z "$BROKER_IP" -a "$BROKER_IP" == " " ]; then
+    if [ -z "$BROKER_IP" -o "$BROKER_IP" == " " ]; then
         BROKER_IP=$(/sbin/ifconfig $BROKER_INTERFACE | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
     fi
 
-    if [ -z "$AMQP_IP" -a "$AMQP_IP" == " " ]; then
+    if [ -z "$AMQP_IP" -o "$AMQP_IP" == " " ]; then
         AMQP_IP=$(/sbin/ifconfig $AMQP_INTERFACE | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
     fi
 

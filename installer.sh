@@ -139,8 +139,7 @@ configure_testbed() {
 
 start_broker() {
     echo "Executing omf_sfa"
-    cd $OMF_SFA_HOME
-    bundle exec ruby -I lib lib/omf-sfa/am/am_server.rb start &> /var/log/omf-sfa.log &
+    start omf-sfa
 }
 
 start_nitos_rcs() {
@@ -251,7 +250,8 @@ main() {
     echo "6. Insert resources into Broker"
     echo "7. Install EC"
     echo "8. Uninstall EC"
-    echo "9. Exit"
+    echo "9. Download baseline.ndz"
+    echo "10. Exit"
     echo
     echo -n "Choose an option..."
     read option
@@ -264,6 +264,7 @@ main() {
     6) insert_nodes ;;
     7) install_ec ;;
     8) uninstall_ec ;;
+    9) download_baseline_image ;;
     *) exit ;;
     esac
 }

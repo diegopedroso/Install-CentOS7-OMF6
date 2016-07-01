@@ -43,7 +43,6 @@ set_ips() {
     XMPP_IP=$(/sbin/ifconfig $XMPP_INTERFACE | grep 'inet end.:' | cut -d: -f2 | awk '{ print $1}')
     BROKER_IP=$(/sbin/ifconfig $BROKER_INTERFACE | grep 'inet end.:' | cut -d: -f2 | awk '{ print $1}')
     AMQP_IP=$(/sbin/ifconfig $AMQP_INTERFACE | grep 'inet end.:' | cut -d: -f2 | awk '{ print $1}')
-    IP_BASE_DHCP_RANGE=$(echo $XMPP_IP | cut -d"." -f1-3)
 
     if [ -z "$XMPP_IP" -o "$XMPP_IP" == " " ]; then
         XMPP_IP=$(/sbin/ifconfig $XMPP_INTERFACE | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
@@ -56,6 +55,8 @@ set_ips() {
     if [ -z "$AMQP_IP" -o "$AMQP_IP" == " " ]; then
         AMQP_IP=$(/sbin/ifconfig $AMQP_INTERFACE | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
     fi
+
+    IP_BASE_DHCP_RANGE=$(echo $XMPP_IP | cut -d"." -f1-3)
 
     find $INSTALLER_HOME/testbed-files -type f -exec sed -i "s/<broker>/$BROKER_IP/g" {} +
     find $INSTALLER_HOME/testbed-files -type f -exec sed -i "s/<amqpserver>/$AMQP_IP/g" {} +

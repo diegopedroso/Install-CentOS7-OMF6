@@ -1,6 +1,7 @@
 #!/bin/bash
 
 INSTALLER_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $INSTALLER_HOME/variables.conf
 
 BROKER_INTERFACE="eth0"
 AMQP_INTERFACE="eth0"
@@ -42,6 +43,7 @@ set_ips() {
     XMPP_IP=$(/sbin/ifconfig $XMPP_INTERFACE | grep 'inet end.:' | cut -d: -f2 | awk '{ print $1}')
     BROKER_IP=$(/sbin/ifconfig $BROKER_INTERFACE | grep 'inet end.:' | cut -d: -f2 | awk '{ print $1}')
     AMQP_IP=$(/sbin/ifconfig $AMQP_INTERFACE | grep 'inet end.:' | cut -d: -f2 | awk '{ print $1}')
+    IP_BASE_DHCP_RANGE=$(echo $XMPP_IP | cut -d"." -f1-3)
 
     if [ -z "$XMPP_IP" -o "$XMPP_IP" == " " ]; then
         XMPP_IP=$(/sbin/ifconfig $XMPP_INTERFACE | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
@@ -59,6 +61,12 @@ set_ips() {
     find $INSTALLER_HOME/testbed-files -type f -exec sed -i "s/<amqpserver>/$AMQP_IP/g" {} +
     find $INSTALLER_HOME/testbed-files -type f -exec sed -i "s/<xmppserver>/$XMPP_IP/g" {} +
     find $INSTALLER_HOME/testbed-files -type f -exec sed -i "s/<xmppserver-interface>/$XMPP_INTERFACE/g" {} +
+    find $INSTALLER_HOME/testbed-files -type f -exec sed -i "s/<ip-base-dhcp-range>/$IP_BASE_DHCP_RANGE/g" {} +
+}
+
+set_domain() {
+
+    find $INSTALLER_HOME/testbed-files -type f -exec sed -i "s/<domain>/$DOMAIN/g" {} +
 }
 
 set_resources_file() {
@@ -71,6 +79,7 @@ main() {
     set_resources_file
     add_hosts_config
     set_ips
+    set_domain
 }
 
 main

@@ -25,4 +25,4 @@
 :testbedTopic: am_controller
 
 #testbed domain (resources with other domains will be ignored unless if this has the value 'ALL')
-:testbedDomain: $DOMAIN
+:testbedDomain: <domain>

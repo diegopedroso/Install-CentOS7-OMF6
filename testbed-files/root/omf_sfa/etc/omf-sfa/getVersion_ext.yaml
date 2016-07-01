@@ -17,7 +17,7 @@
 #     tool_logo: http://mytestbed.net/attachments/download/797/oml.png
 #     tool_version: 2.10
 #     tool_name: OML
-  hrn: ufg.br
-  urn: URI:urn:publicid:IDN+ufg:br+authority+sa
+  hrn: <domain>
+  urn: URI:urn:publicid:IDN+ufrj:br+authority+sa
   hostname: 172.17.0.3
 #  code_tag: https://github.com/dostavro/omf_sfa/tree/xmpp

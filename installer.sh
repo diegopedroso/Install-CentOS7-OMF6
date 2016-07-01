@@ -195,7 +195,7 @@ install_xmpp_server() {
 
 download_baseline_image() {
     mkdir /root/omf-images
-    wget https://www.dropbox.com/s/q7wrf5jtnirff28/baseline.ndz?dl=0 -O /root/omf-images/baseline2.ndz
+    wget https://www.dropbox.com/s/q7wrf5jtnirff28/baseline.ndz?dl=0 -O /root/omf-images/baseline.ndz
 }
 
 install_testbed() {

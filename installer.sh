@@ -195,7 +195,15 @@ install_xmpp_server() {
 
 download_baseline_image() {
     mkdir /root/omf-images
-    wget https://www.dropbox.com/s/q7wrf5jtnirff28/baseline.ndz?dl=0 -O /root/omf-images/baseline.ndz
+    wget https://www.dropbox.com/s/2bgqpebadxb8fgh/root-node-icarus1-05_07_2016_01%3A51.ndz?dl=0 -O /root/omf-images/baseline.ndz
+}
+
+install_oml2() {
+    echo "deb http://download.opensuse.org/repositories/home:/cdwertmann:/oml/xUbuntu_14.04/ ./" >> /etc/apt/sources.list
+    echo "deb-src http://download.opensuse.org/repositories/home:/cdwertmann:/oml/xUbuntu_14.04/ ./" >> /etc/apt/sources.list
+
+    apt-get update
+    apt-get install oml2-server
 }
 
 install_testbed() {

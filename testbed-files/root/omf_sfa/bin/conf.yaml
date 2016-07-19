@@ -2,5 +2,5 @@
   :entity_cert: /root/.omf/user_cert.pem
   :entity_key: /root/.omf/user_cert.pkey
 :rest:
-  :server: broker
+  :server: <domain>
   :port: 8001

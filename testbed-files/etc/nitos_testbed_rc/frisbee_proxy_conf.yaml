@@ -2,7 +2,7 @@
 :xmpp:
   :username: frisbee_user
   :password: lab251
-  :server: xmppserver
+  :server: <domain>
 #x509 certificates to be used by user_proxy
 :auth:
   :root_cert_dir: /root/.omf/trusted_roots
@@ -49,4 +49,4 @@
 
   # Local interface to bind to for frisbee traffic
   #multicastIF: 192.168.204.1
-  :multicastIF: <xmppserver>
+  :multicastIF: <control_network>

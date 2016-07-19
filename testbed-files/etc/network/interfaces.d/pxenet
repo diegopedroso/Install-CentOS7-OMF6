@@ -1,4 +1,0 @@
-auto <xmppserver-interface>
-iface <xmppserver-interface> inet static
-address <xmppserver>
-netmask 255.255.255.0

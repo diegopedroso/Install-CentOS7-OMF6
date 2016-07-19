@@ -1,7 +1,7 @@
 :xmpp:
   :script_user: testbed
   :password: lab251
-  :server: xmppserver
+  :server: <domain>
 :auth:
   :root_cert_dir: /etc/nitos_testbed_rc/trusted_roots
   :entity_cert: /root/.omf/user_cert.pem

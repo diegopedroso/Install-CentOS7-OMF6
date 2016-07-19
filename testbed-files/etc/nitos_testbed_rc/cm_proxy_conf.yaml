@@ -2,7 +2,7 @@
 :xmpp:
   :username: cm_user
   :password: lab251
-  :server: xmppserver
+  :server: <domain>
 #x509 certificates to be used by cm_proxy
 :auth:
   :root_cert_dir: /root/.omf/trusted_roots

@@ -126,7 +126,7 @@ configure_testbed() {
     echo "###############COPYING CONFIGURATION FILES TO THE RIGHT PLACE###############"
     cp -rf /etc/dnsmasq.conf /etc/dnsmasq.conf.bkp
     cd $INSTALLER_HOME
-    cp -r ./testbed-files/* /
+    cp -r /tmp/testbed-files/* /
     ##END OF - COPING CONFIGURATION FILES
 
     #START OF PXE CONFIGURATION

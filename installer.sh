@@ -49,6 +49,7 @@ install_broker() {
         echo $(pwd)
         echo $OMF_SFA_HOME
         git clone https://github.com/viniciusgb4/omf_sfa.git
+        git reset --hard b02d27caada6d97e48becca266adec198aa52e1f
         cd $OMF_SFA_HOME
         echo "###############INSTALLING OMF_SFA###############"
         bundle install

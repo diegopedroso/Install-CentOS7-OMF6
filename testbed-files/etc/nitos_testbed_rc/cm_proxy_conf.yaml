@@ -10,7 +10,7 @@
   :entity_key: /root/.omf/cm_factory.pkey
 
 # URL for the rest interface of the broker
-:broker_url: https://broker:8001
+:broker_url: https://<domain>:8001
 
 #time (in seconds) before timeout error occurs
 :timeout: 80

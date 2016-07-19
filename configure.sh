@@ -6,8 +6,7 @@ source $INSTALLER_HOME/variables.conf
 CONTROL_NETWORK_INTERFACE="eth1"
 
 create_tmp_testbed_files() {
-    mkdir -p /tmp/testbed-files
-    cp -rf $INSTALLER_HOME/testbed-files /tmp/testbed-files
+    cp -rf $INSTALLER_HOME/testbed-files /tmp/
 }
 
 add_hosts_config() {

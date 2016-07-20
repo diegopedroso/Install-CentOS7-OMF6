@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 
 INSTALLER_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ICARUS_NAMES=()
@@ -16,34 +16,7 @@ read_icarus_names() {
         IFS=$old_IFS
 }
 
-configure_icarus() {
-    for node in "${ICARUS_NAMES[@]}"; do
-        configure_omf_rc_on_icarus ${node}
-    done
-}
-
-configure_omf_rc_on_icarus() {
-    is_up=look_node_is_up $1
-    if [ $is_up -eq 0 ]; then
-        scp /config.yml root@$1:/etc/omf_rc
-    else
-        turn_on_node $1
-
-        echo "Waiting for node to boot"
-
-        WAITED_TIME=0
-        while [ $(look_node_is_up icarus5) -eq 0 ] || [ $WAITED_TIME -eq 30 ]; do
-            echo -ne "Waiting for timeout $WAITED_TIME/30"'\r'
-            WAITED_TIME=$[$WAITED_TIME +1]
-        done
-        echo "Node ${1} is up. Let's configure it."
-        configure_omf_rc_on_icarus $1
-    fi
-}
-
-turn_on_node() {
-    curl http://$1/on
-}
+function print_array_with_separator { local IFS="$1"; shift; echo "$*"; }
 
 look_node_is_up() {
     if ping -c 1 $1 &> /dev/null; then
@@ -58,20 +31,17 @@ execute_tell_on() {
 }
 
 execute_omf6_stat() {
-    omf6 stat -t $(join , "${ICARUS_NAMES[@]}")
+    omf6 stat -t $(print_array_with_separator , "${ICARUS_NAMES[@]}")
 }
-
-function print_array_with_separator { local IFS="$1"; shift; echo "$*"; }
 
 main() {
     read_icarus_names
-    configure_icarus
 
     echo "------------------------------------------"
     echo "Options:"
     echo
-    echo "1. Test stat command"
-    echo "2. Install only Broker"
+    echo "1. Configure omf_rc on Icarus nodes"
+    echo "2. Test stat command"
     echo "3. Install only NITOS Testbed RCs"
     echo "4. Uninstall Broker"
     echo "5. Uninstall NITOS Testbed RCs"
@@ -84,8 +54,8 @@ main() {
     echo -n "Choose an option..."
     read option
     case $option in
-    1) execute_omf6_stat ;;
-    2)  ;;
+    1) $INSTALLER_HOME/configure-icarus.sh ;;
+    2) execute_omf6_stat;;
     3)  ;;
     4)  ;;
     5)  ;;

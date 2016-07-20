@@ -234,20 +234,24 @@ install_testbed() {
     echo -n "Do you want to insert the resources into Broker? (Y/n)"
     read option
     case $option in
-        y) insert_nodes ;;
-        Y) insert_nodes ;;
-        n) ;;
-        N) ;;
+        Y|y) insert_nodes ;;
+        N|n) ;;
         *) insert_nodes;;
+    esac
+
+    echo -n "Do you want to configure omf_ec on Icarus nodes? (Y/n)"
+    read option
+    case $option in
+        Y|y) $INSTALLER_HOME/configure-icarus.sh ;;
+        N|n) ;;
+        *) $INSTALLER_HOME/configure-icarus.sh ;;
     esac
 
     echo -n "Do you want to download the baseline image for icarus nodes? (Y/n)"
     read option
     case $option in
-        y) download_baseline_image ;;
-        Y) download_baseline_image ;;
-        n) exit ;;
-        N) exit ;;
+        Y|y) download_baseline_image ;;
+        N|n) exit ;;
         *) download_baseline_image;;
     esac
 }
@@ -265,7 +269,8 @@ main() {
     echo "7. Install EC"
     echo "8. Uninstall EC"
     echo "9. Download baseline.ndz"
-    echo "10. Exit"
+    echo "10. Configure omf_rc on Icarus nodes"
+    echo "11. Exit"
     echo
     echo -n "Choose an option..."
     read option
@@ -279,6 +284,7 @@ main() {
     7) install_ec ;;
     8) uninstall_ec ;;
     9) download_baseline_image ;;
+    10) $INSTALLER_HOME/configure-icarus.sh ;;
     *) exit ;;
     esac
 }

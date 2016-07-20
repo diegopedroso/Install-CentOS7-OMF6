@@ -23,7 +23,7 @@ find_cm_ip_by_icarus_name() {
     while read line; do
         IFS=', ' read -r -a array <<< "$line"
         if [[ ${array[0]} == *"${1}"* ]]; then
-            cm_ip=${array[2]}
+            cm_ip=${array[4]}
         fi
         IFS=$'n'
     done < $INSTALLER_HOME/conf/nodes.conf

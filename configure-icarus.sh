@@ -4,31 +4,31 @@ INSTALLER_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ICARUS_NAMES=()
 
 read_icarus_names() {
-        oldIFS=$IFS
+    oldIFS=$IFS
 
-        while read line; do
-            IFS=', ' read -r -a array <<< "$line"
-            if [[ ${array[0]} != *"#"* ]]; then
-                ICARUS_NAMES+=(${array[0]})
-            fi
-            IFS=$'n'
-        done < $INSTALLER_HOME/conf/nodes.conf
-        IFS=$old_IFS
+    while read line; do
+        IFS=', ' read -r -a array <<< "$line"
+        if [[ ${array[0]} != *"#"* ]]; then
+            ICARUS_NAMES+=(${array[0]})
+        fi
+        IFS=$'n'
+    done < $INSTALLER_HOME/conf/nodes.conf
+    IFS=$old_IFS
 }
 
 find_cm_ip_by_icarus_name() {
-        oldIFS=$IFS
+    oldIFS=$IFS
 
-        cm_ip=""
-        while read line; do
-            IFS=', ' read -r -a array <<< "$line"
-            if [[ ${array[0]} == *"${1}"* ]]; then
-                cm_ip=${array[2]}
-            fi
-            IFS=$'n'
-        done < $INSTALLER_HOME/conf/nodes.conf
-        IFS=$old_IFS
-        echo ${cm_ip}
+    cm_ip=""
+    while read line; do
+        IFS=', ' read -r -a array <<< "$line"
+        if [[ ${array[0]} == *"${1}"* ]]; then
+            cm_ip=${array[2]}
+        fi
+        IFS=$'n'
+    done < $INSTALLER_HOME/conf/nodes.conf
+    IFS=$old_IFS
+    echo ${cm_ip}
 }
 
 configure_icarus() {

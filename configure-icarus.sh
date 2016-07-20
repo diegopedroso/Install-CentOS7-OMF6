@@ -83,6 +83,7 @@ look_node_is_up() {
 main() {
     read_icarus_names
     configure_icarus
+
 }
 
 main

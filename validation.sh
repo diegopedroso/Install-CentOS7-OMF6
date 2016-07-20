@@ -54,14 +54,14 @@ look_node_is_up() {
 }
 
 execute_tell_on() {
-    omf6 tell -a on -t $(join , "${ICARUS_NAMES[@]}")
+    omf6 tell -a on -t $(print_array_with_separator , "${ICARUS_NAMES[@]}")
 }
 
 execute_omf6_stat() {
     omf6 stat -t $(join , "${ICARUS_NAMES[@]}")
 }
 
-function join { local IFS="$1"; shift; echo "$*"; }
+function print_array_with_separator { local IFS="$1"; shift; echo "$*"; }
 
 main() {
     read_icarus_names

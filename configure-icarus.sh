@@ -48,7 +48,7 @@ configure_omf_rc_on_icarus() {
         echo "Waiting for node to boot"
 
         WAITED_TIME=0
-        while [ $(look_node_is_up $1) -eq 0 ] || [ $WAITED_TIME -le 20 ]; do
+        while [ $(look_node_is_up $1) -eq 0 ] && [ $WAITED_TIME -le 20 ]; do
             echo -ne "Waiting for timeout $WAITED_TIME/20"'\r'
             WAITED_TIME=$[$WAITED_TIME +1]
         done

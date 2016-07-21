@@ -27,7 +27,7 @@ look_node_is_up() {
 }
 
 execute_omf6_stat() {
-    omf6 stat -t $(print_array_with_separator , "${ICARUS_NAMES[@]}")
+    timeout 10 omf6 stat -t $(print_array_with_separator , "${ICARUS_NAMES[@]}")
 }
 
 execute_omf6_tell_on() {
@@ -43,12 +43,14 @@ execute_omf6_tell_reset() {
 }
 
 execute_omf6_load() {
-    omf6 load -t $(print_array_with_separator , "${ICARUS_NAMES[@]}")
+    for node in "${ICARUS_NAMES[@]}"; do
+        timeout 120 omf6 load -t $node
+    done
 }
 
 execute_omf6_save() {
     for node in "${ICARUS_NAMES[@]}"; do
-        omf6 save -n $node
+        timeout 120 omf6 save -n $node
     done
 }
 

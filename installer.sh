@@ -4,13 +4,11 @@ INSTALLER_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $INSTALLER_HOME/variables.conf
 
 install_dependencies() {
-    echo 'deb http://pkg.mytestbed.net/ubuntu precise/ ' >> /etc/apt/sources.list \
-    && apt-get update
+    apt-get update
     apt-get install -y --force-yes \
        build-essential \
        curl \
        dnsmasq \
-       frisbee \
        git \
        libsqlite3-dev \
        libreadline6-dev \
@@ -158,40 +156,25 @@ log_broker() {
     tail -f /var/log/omf-sfa.log
 }
 
-install_docker() {
-
-    if [ "$(ls -A /etc/apt/sources.list.d/docker.list)" ]; then
-        rm -rf /etc/apt/sources.list.d/docker.list
-    fi
-
-    apt-get install -y --force-yes apt-transport-https ca-certificates
-    apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-
-    echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" > /etc/apt/sources.list.d/docker.list
-
-    apt-get update \
-    && apt-get purge -y --force-yes lxc-docker \
-    && apt-cache policy docker-engine \
-    && apt-get install -y --force-yes linux-image-extra-$(uname -r) \
-    && apt-get install -y --force-yes apparmor \
-    && apt-get install -y --force-yes docker-engine \
-    && service docker start
-}
-
-install_docker_compose() {
-    curl -L https://github.com/docker/compose/releases/download/1.6.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-    chmod +x /usr/local/bin/docker-compose
-}
-
 install_amqp_server() {
     apt-get install  -y --force-yes rabbitmq-server
 }
 
+install_java() {
+    add-apt-repository -y ppa:webupd8team/java
+    apt-get update
+    apt-get install -y --force-yes oracle-java7-installer
+    echo "JAVA_HOME=/usr/lib/jvm/java-7-oracle" >> /root/.bashrc
+    source /root/.bashrc
+}
+
+
 install_xmpp_server() {
-    cd /root
-    git clone https://github.com/viniciusgb4/docker-omf6.git
-    cd /root/docker-omf6
-    docker-compose up -d pubsub
+    cd /tmp
+    wget http://www.igniterealtime.org/downloadServlet?filename=openfire/openfire_3.8.1_all.deb
+    dpkg -i downloadServlet\?filename\=openfire%2Fopenfire_3.8.1_all.deb
+    sed -i '/\#\#\# END INIT INFO/a \\nJAVA_HOME=/usr/lib/jvm/java-7-oracle' /etc/init.d/openfire
+    /etc/init.d/openfire start
 }
 
 download_baseline_image() {
@@ -212,9 +195,8 @@ install_testbed() {
 
     $INSTALLER_HOME/configure.sh
 
-    install_docker
-    install_docker_compose
     install_amqp_server
+    install_java
     install_xmpp_server
     install_broker
     install_nitos_rcs

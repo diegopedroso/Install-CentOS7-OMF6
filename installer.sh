@@ -48,8 +48,7 @@ install_broker() {
         cd /root
         echo $(pwd)
         echo $OMF_SFA_HOME
-        git clone https://github.com/viniciusgb4/omf_sfa.git
-        git branch amqp
+        git clone -b amqp https://github.com/viniciusgb4/omf_sfa.git
         cd $OMF_SFA_HOME
         echo "###############INSTALLING OMF_SFA###############"
         bundle install
@@ -94,9 +93,8 @@ install_nitos_rcs() {
         #Start of NITOS Testbed RCs installation
         echo "###############INSTALLING NITOS TESTBED RCS###############"
         cd /root
-        git clone https://github.com/viniciusgb4/nitos_testbed_rc.git
+        git clone -b amqp https://github.com/viniciusgb4/nitos_testbed_rc.git
         cd $NITOS_HOME
-        git branch amqp
         bundle install
 
         install_ntrc

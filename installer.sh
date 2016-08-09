@@ -4,11 +4,13 @@ INSTALLER_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $INSTALLER_HOME/variables.conf
 
 install_dependencies() {
-    apt-get update
+    echo 'deb http://pkg.mytestbed.net/ubuntu precise/ ' >> /etc/apt/sources.list \
+    && apt-get update
     apt-get install -y --force-yes \
        build-essential \
        curl \
        dnsmasq \
+       frisbee \
        git \
        libsqlite3-dev \
        libreadline6-dev \
@@ -47,8 +49,8 @@ install_broker() {
         echo $(pwd)
         echo $OMF_SFA_HOME
         git clone https://github.com/viniciusgb4/omf_sfa.git
+        git branch amqp
         cd $OMF_SFA_HOME
-        git reset --hard b02d27caada6d97e48becca266adec198aa52e1f
         echo "###############INSTALLING OMF_SFA###############"
         bundle install
 
@@ -81,8 +83,8 @@ uninstall_broker() {
     echo "Uninstall NITOS Testbed RCs?"
     read option
     case $option in
-        y) unistall_nitos_rcs ;;
-        Y) unistall_nitos_rcs ;;
+        y) uninstall_nitos_rcs ;;
+        Y) uninstall_nitos_rcs ;;
         *) ;;
     esac
 }
@@ -91,7 +93,12 @@ install_nitos_rcs() {
     if ! gem list nitos_testbed_rc -i; then
         #Start of NITOS Testbed RCs installation
         echo "###############INSTALLING NITOS TESTBED RCS###############"
-        gem install nitos_testbed_rc
+        cd /root
+        git clone https://github.com/viniciusgb4/nitos_testbed_rc.git
+        cd $NITOS_HOME
+        git branch amqp
+        bundle install
+
         install_ntrc
 
         ##START OF CERTIFICATES CONFIGURATION
@@ -196,8 +203,8 @@ install_testbed() {
     $INSTALLER_HOME/configure.sh
 
     install_amqp_server
-    install_java
-    install_xmpp_server
+    #install_java
+    #install_xmpp_server
     install_broker
     install_nitos_rcs
     configure_testbed
@@ -205,13 +212,21 @@ install_testbed() {
 
     service dnsmasq restart
 
-    echo "Configure XMPP Server before start"
-    links2 http://localhost:9090
+#    echo "Configure XMPP Server before start"
+#    links2 http://localhost:9090
     start_broker
     start_nitos_rcs
 
     echo "Waiting for services start up..."
     sleep 5s
+
+    echo -n "Do you want to install the OML Server? (Y/n)"
+    read option
+    case $option in
+        Y|y) install_oml2 ;;
+        N|n) exit ;;
+        *) install_oml2 ;;
+    esac
 
     echo -n "Do you want to insert the resources into Broker? (Y/n)"
     read option

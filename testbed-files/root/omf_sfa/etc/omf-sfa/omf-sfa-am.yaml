@@ -19,10 +19,14 @@ omf_sfa_am:
         private_key_file: ~/.omf/am.pkey
       trusted_roots: ~/.omf/trusted_roots
     -
-      type: xmpp
+      type: pubsub
+      protocol: amqp
       user: testbed
       password: lab251
       server: <domain>
+      pubsub_opt:
+        require: omf-sfa/am/am-amqp/am_amqp
+        constructor: OMF::SFA::AM::AMQP::AMController
       auth:
         :entity_cert: ~/.omf/am.pem
         :entity_key: ~/.omf/am.pkey

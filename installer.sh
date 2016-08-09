@@ -213,6 +213,24 @@ install_testbed() {
 
 #    echo "Configure XMPP Server before start"
 #    links2 http://localhost:9090
+
+    #########################START OF CREATE USER RABBITMQ#####################
+    rabbitmqctl add_user testbed lab251
+    rabbitmqctl set_permissions -p / testbed ".*" ".*" ".*"
+
+    rabbitmqctl add_user cm_user lab251
+    rabbitmqctl set_permissions -p / cm_user ".*" ".*" ".*"
+
+    rabbitmqctl add_user frisbee_user lab251
+    rabbitmqctl set_permissions -p / frisbee_user ".*" ".*" ".*"
+
+    rabbitmqctl add_user script_user lab251
+    rabbitmqctl set_permissions -p / script_user ".*" ".*" ".*"
+
+    rabbitmqctl add_user user_proxy_user lab251
+    rabbitmqctl set_permissions -p / user_proxy_user ".*" ".*" ".*"
+    #########################END OF CREATE USER RABBITMQ#####################
+
     start_broker
     start_nitos_rcs
 

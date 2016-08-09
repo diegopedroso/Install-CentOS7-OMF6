@@ -95,7 +95,8 @@ install_nitos_rcs() {
         cd /root
         git clone -b amqp https://github.com/viniciusgb4/nitos_testbed_rc.git
         cd $NITOS_HOME
-        bundle install
+        gem build nitos_testbed_rc.gemspec
+        gem install nitos_testbed_rc-1.0.2.gem
 
         install_ntrc
 
@@ -222,7 +223,7 @@ install_testbed() {
     read option
     case $option in
         Y|y) install_oml2 ;;
-        N|n) exit ;;
+        N|n) ;;
         *) install_oml2 ;;
     esac
 

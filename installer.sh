@@ -92,7 +92,12 @@ install_nitos_rcs() {
     if ! gem list nitos_testbed_rc -i; then
         #Start of NITOS Testbed RCs installation
         echo "###############INSTALLING NITOS TESTBED RCS###############"
-        gem install nitos_testbed_rc
+        cd /root
+        git clone -b amqp https://github.com/viniciusgb4/nitos_testbed_rc.git
+        cd $NITOS_HOME
+        gem build nitos_testbed_rc.gemspec
+        gem install nitos_testbed_rc-1.0.2.gem
+
         install_ntrc
 
         ##START OF CERTIFICATES CONFIGURATION

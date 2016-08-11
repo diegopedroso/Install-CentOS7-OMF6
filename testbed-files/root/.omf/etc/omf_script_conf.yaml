@@ -1,5 +1,5 @@
 :pubsub:
-  :protocol: amqp
+  :protocol: xmpp
   :script_user: script_user
   :password: lab251
   :server: <domain>

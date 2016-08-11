@@ -28,9 +28,9 @@ install_dependencies() {
        zlib1g-dev
 
     cd /tmp \
-       && wget http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.5.tar.gz \
-       && tar -xvzf ruby-2.1.5.tar.gz \
-       && cd ruby-2.1.5/ \
+       && wget http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.2.3.tar.gz \
+       && tar -xvzf ruby-2.2.3.tar.gz \
+       && cd ruby-2.2.3/ \
        && ./configure --prefix=/usr/local \
        && make \
        && make install \
@@ -82,8 +82,8 @@ uninstall_broker() {
     echo "Uninstall NITOS Testbed RCs?"
     read option
     case $option in
-        y) uninstall_nitos_rcs ;;
-        Y) uninstall_nitos_rcs ;;
+        y) unistall_nitos_rcs ;;
+        Y) unistall_nitos_rcs ;;
         *) ;;
     esac
 }
@@ -92,12 +92,7 @@ install_nitos_rcs() {
     if ! gem list nitos_testbed_rc -i; then
         #Start of NITOS Testbed RCs installation
         echo "###############INSTALLING NITOS TESTBED RCS###############"
-        cd /root
-        git clone -b amqp https://github.com/viniciusgb4/nitos_testbed_rc.git
-        cd $NITOS_HOME
-        gem build nitos_testbed_rc.gemspec
-        gem install nitos_testbed_rc-1.0.2.gem
-
+        gem install nitos_testbed_rc
         install_ntrc
 
         ##START OF CERTIFICATES CONFIGURATION
@@ -162,25 +157,40 @@ log_broker() {
     tail -f /var/log/omf-sfa.log
 }
 
+install_docker() {
+
+    if [ "$(ls -A /etc/apt/sources.list.d/docker.list)" ]; then
+        rm -rf /etc/apt/sources.list.d/docker.list
+    fi
+
+    apt-get install -y --force-yes apt-transport-https ca-certificates
+    apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+
+    echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" > /etc/apt/sources.list.d/docker.list
+
+    apt-get update \
+    && apt-get purge -y --force-yes lxc-docker \
+    && apt-cache policy docker-engine \
+    && apt-get install -y --force-yes linux-image-extra-$(uname -r) \
+    && apt-get install -y --force-yes apparmor \
+    && apt-get install -y --force-yes docker-engine \
+    && service docker start
+}
+
+install_docker_compose() {
+    curl -L https://github.com/docker/compose/releases/download/1.6.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose
+}
+
 install_amqp_server() {
     apt-get install  -y --force-yes rabbitmq-server
 }
 
-install_java() {
-    add-apt-repository -y ppa:webupd8team/java
-    apt-get update
-    apt-get install -y --force-yes oracle-java7-installer
-    echo "JAVA_HOME=/usr/lib/jvm/java-7-oracle" >> /root/.bashrc
-    source /root/.bashrc
-}
-
-
 install_xmpp_server() {
-    cd /tmp
-    wget http://www.igniterealtime.org/downloadServlet?filename=openfire/openfire_3.8.1_all.deb
-    dpkg -i downloadServlet\?filename\=openfire%2Fopenfire_3.8.1_all.deb
-    sed -i '/\#\#\# END INIT INFO/a \\nJAVA_HOME=/usr/lib/jvm/java-7-oracle' /etc/init.d/openfire
-    /etc/init.d/openfire start
+    cd /root
+    git clone https://github.com/viniciusgb4/docker-omf6.git
+    cd /root/docker-omf6
+    docker-compose up -d pubsub
 }
 
 download_baseline_image() {
@@ -201,9 +211,10 @@ install_testbed() {
 
     $INSTALLER_HOME/configure.sh
 
-    install_amqp_server
-    #install_java
-    #install_xmpp_server
+    install_docker
+    install_docker_compose
+    #install_amqp_server
+    install_xmpp_server
     install_broker
     install_nitos_rcs
     configure_testbed
@@ -211,39 +222,13 @@ install_testbed() {
 
     service dnsmasq restart
 
-#    echo "Configure XMPP Server before start"
-#    links2 http://localhost:9090
-
-    #########################START OF CREATE USER RABBITMQ#####################
-    rabbitmqctl add_user testbed lab251
-    rabbitmqctl set_permissions -p / testbed ".*" ".*" ".*"
-
-    rabbitmqctl add_user cm_user lab251
-    rabbitmqctl set_permissions -p / cm_user ".*" ".*" ".*"
-
-    rabbitmqctl add_user frisbee_user lab251
-    rabbitmqctl set_permissions -p / frisbee_user ".*" ".*" ".*"
-
-    rabbitmqctl add_user script_user lab251
-    rabbitmqctl set_permissions -p / script_user ".*" ".*" ".*"
-
-    rabbitmqctl add_user user_proxy_user lab251
-    rabbitmqctl set_permissions -p / user_proxy_user ".*" ".*" ".*"
-    #########################END OF CREATE USER RABBITMQ#####################
-
+    echo "Configure XMPP Server before start"
+    links2 http://localhost:9090
     start_broker
     start_nitos_rcs
 
     echo "Waiting for services start up..."
     sleep 5s
-
-    echo -n "Do you want to install the OML Server? (Y/n)"
-    read option
-    case $option in
-        Y|y) install_oml2 ;;
-        N|n) ;;
-        *) install_oml2 ;;
-    esac
 
     echo -n "Do you want to insert the resources into Broker? (Y/n)"
     read option

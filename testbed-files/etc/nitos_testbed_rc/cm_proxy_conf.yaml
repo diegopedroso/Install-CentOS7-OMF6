@@ -1,6 +1,6 @@
 #details to be used for the connection to the xmpp server
 :pubsub:
-  :protocol: amqp
+  :protocol: xmpp
   :username: cm_user
   :password: lab251
   :server: <domain>

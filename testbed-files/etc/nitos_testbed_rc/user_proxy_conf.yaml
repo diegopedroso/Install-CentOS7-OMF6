@@ -1,6 +1,6 @@
 #pubsub details
 :pubsub:
-  :protocol: amqp
+  :protocol: xmpp
   :username: user_proxy_user
   :password: lab251
   :server: <domain>

@@ -28,7 +28,7 @@ install_dependencies() {
        zlib1g-dev
 
     cd /tmp \
-       && wget http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.2.3.tar.gz \
+       && wget http://ftp.ruby-lang.org/pub/ruby/2.2/ruby-2.2.3.tar.gz \
        && tar -xvzf ruby-2.2.3.tar.gz \
        && cd ruby-2.2.3/ \
        && ./configure --prefix=/usr/local \

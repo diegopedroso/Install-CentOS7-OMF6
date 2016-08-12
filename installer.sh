@@ -216,10 +216,10 @@ install_testbed() {
 
     $INSTALLER_HOME/configure.sh
 
-    install_docker
-    install_docker_compose
-    #install_amqp_server
-    install_xmpp_server
+    #install_docker
+    #install_docker_compose
+    install_amqp_server
+    #install_xmpp_server
     install_broker
     install_nitos_rcs
     configure_testbed
@@ -227,13 +227,39 @@ install_testbed() {
 
     service dnsmasq restart
 
-    echo "Configure XMPP Server before start"
-    links2 http://localhost:9090
+#    echo "Configure XMPP Server before start"
+#    links2 http://localhost:9090
+
+    #########################START OF CREATE USER RABBITMQ#####################
+    rabbitmqctl add_user testbed lab251
+    rabbitmqctl set_permissions -p / testbed ".*" ".*" ".*"
+
+    rabbitmqctl add_user cm_user lab251
+    rabbitmqctl set_permissions -p / cm_user ".*" ".*" ".*"
+
+    rabbitmqctl add_user frisbee_user lab251
+    rabbitmqctl set_permissions -p / frisbee_user ".*" ".*" ".*"
+
+    rabbitmqctl add_user script_user lab251
+    rabbitmqctl set_permissions -p / script_user ".*" ".*" ".*"
+
+    rabbitmqctl add_user user_proxy_user lab251
+    rabbitmqctl set_permissions -p / user_proxy_user ".*" ".*" ".*"
+    #########################END OF CREATE USER RABBITMQ#####################
+
     start_broker
     start_nitos_rcs
 
     echo "Waiting for services start up..."
     sleep 5s
+
+    echo -n "Do you want to install the OML Server? (Y/n)"
+    read option
+    case $option in
+        Y|y) install_oml2 ;;
+        N|n) ;;
+        *) install_oml2 ;;
+    esac
 
     echo -n "Do you want to insert the resources into Broker? (Y/n)"
     read option

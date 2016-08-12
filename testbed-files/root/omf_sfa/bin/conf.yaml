@@ -4,7 +4,7 @@
 :rest:
   :server: <domain>
   :port: 8001
-:xmpp:
+:amqp:
   :server: localhost
   :port: 8001
   :username: testbed

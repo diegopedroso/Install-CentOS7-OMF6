@@ -1,6 +1,6 @@
 #pubsub details
 :pubsub:
-  :protocol: xmpp
+  :protocol: amqp
   :username: frisbee_user
   :password: lab251
   :server: <domain>

@@ -42,9 +42,19 @@ install_dependencies() {
 install_omf() {
     cd /root
     git clone -b amqp https://github.com/viniciusgb4/omf.git
-    cd $OMF_HOME
+    cd $OMF_COMMON_HOME
     gem build omf_common.gemspec
-    gem install omf_common-6.2.4.gem
+    gem install omf_common-*.gem
+
+    cd $OMF_RC_HOME
+    gem build omf_rc.gemspec
+    gem install omf_rc-*.gem
+
+    cd $OMF_EC_HOME
+    gem build omf_ec.gemspec
+    gem install omf_ec-*.gem
+
+    cd /root
     rm -rf $OMF_HOME
 }
 

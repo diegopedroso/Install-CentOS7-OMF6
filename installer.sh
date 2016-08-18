@@ -39,6 +39,15 @@ install_dependencies() {
     gem install bundler --no-ri --no-rdoc
 }
 
+install_omf() {
+    cd /root
+    git clone -b amqp https://github.com/viniciusgb4/omf.git
+    cd $OMF_HOME
+    gem build omf_common.gemspec
+    gem install omf_common-6.2.4.gem
+    rm -rf $OMF_HOME
+}
+
 install_broker() {
     #if $OMF_SFA_HOME directory does not exist or is empty
     if [ ! "$(ls -A $OMF_SFA_HOME)" ] || [ ! "$(ls -A /root/.omf)" ]; then
@@ -108,6 +117,7 @@ install_nitos_rcs() {
         cp -r /root/.omf/trusted_roots/ /etc/nitos_testbed_rc/
         ##END OF CERTIFICATES CONFIGURATION
         #End of NITOS Testbed RCs installation
+        rm -rf $NITOS_HOME
     fi
 }
 
@@ -162,31 +172,6 @@ log_broker() {
     tail -f /var/log/omf-sfa.log
 }
 
-install_docker() {
-
-    if [ "$(ls -A /etc/apt/sources.list.d/docker.list)" ]; then
-        rm -rf /etc/apt/sources.list.d/docker.list
-    fi
-
-    apt-get install -y --force-yes apt-transport-https ca-certificates
-    apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-
-    echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" > /etc/apt/sources.list.d/docker.list
-
-    apt-get update \
-    && apt-get purge -y --force-yes lxc-docker \
-    && apt-cache policy docker-engine \
-    && apt-get install -y --force-yes linux-image-extra-$(uname -r) \
-    && apt-get install -y --force-yes apparmor \
-    && apt-get install -y --force-yes docker-engine \
-    && service docker start
-}
-
-install_docker_compose() {
-    curl -L https://github.com/docker/compose/releases/download/1.6.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-    chmod +x /usr/local/bin/docker-compose
-}
-
 install_amqp_server() {
     apt-get install  -y --force-yes rabbitmq-server
 }
@@ -209,8 +194,7 @@ install_testbed() {
 
     $INSTALLER_HOME/configure.sh
 
-    #install_docker
-    #install_docker_compose
+    install_omf
     install_amqp_server
     install_broker
     install_nitos_rcs

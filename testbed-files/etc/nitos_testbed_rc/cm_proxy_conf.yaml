@@ -1,7 +1,7 @@
 #details to be used for the connection to the xmpp server
 :pubsub:
   :protocol: amqp
-  :username: cm_user
+  :username: testbed
   :password: lab251
   :server: <domain>
 #x509 certificates to be used by cm_proxy

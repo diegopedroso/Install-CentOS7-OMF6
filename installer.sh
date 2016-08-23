@@ -209,7 +209,7 @@ install_testbed() {
     install_broker
     install_nitos_rcs
     configure_testbed
-    install_ec
+    #install_ec
 
     service dnsmasq restart
 

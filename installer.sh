@@ -6,7 +6,7 @@ source $INSTALLER_HOME/variables.conf
 install_dependencies() {
     echo 'deb http://pkg.mytestbed.net/ubuntu precise/ ' >> /etc/apt/sources.list \
     && apt-get update
-    apt-get install -y --force-yes \
+    apt-get install -y --force-yes --reinstall \
        build-essential \
        curl \
        dnsmasq \
@@ -58,6 +58,12 @@ install_omf() {
     rm -rf $OMF_HOME
 }
 
+remove_omf() {
+    gem unistall omf_common -a -I --force -x
+    gem unistall omf_rc -a -I --force -x
+    gem unistall omf_rc -a -I --force -x
+}
+
 install_broker() {
     #if $OMF_SFA_HOME directory does not exist or is empty
     if [ ! "$(ls -A $OMF_SFA_HOME)" ] || [ ! "$(ls -A /root/.omf)" ]; then
@@ -95,14 +101,17 @@ install_broker() {
     fi
 }
 
-uninstall_broker() {
-    bundle exec ruby -I lib lib/omf-sfa/am/am_server.rb stop
+remove_broker() {
+    stop omf-sfa
     rm -rf $OMF_SFA_HOME
-    echo "Uninstall NITOS Testbed RCs?"
+    rm /etc/init/omf-sfa.conf
+    rm -rf /root/.omf/*.pem
+    rm -rf /root/.omf/*.pkey
+    rm -rf /root/.omf/trusted_roots
+    echo "NITOS Testbed RCs will not work without Broker. Do you want to uninstall them too? (Y/n)"
     read option
     case $option in
-        y) unistall_nitos_rcs ;;
-        Y) unistall_nitos_rcs ;;
+        Y|y) unistall_nitos_rcs --purge;;
         *) ;;
     esac
 }
@@ -131,25 +140,25 @@ install_nitos_rcs() {
     fi
 }
 
-uninstall_nitos_rcs() {
-    gem unistall nitos_testbed_rc
-    rm -rf /root/.omf
+remove_nitos_rcs() {
+    stop ntrc
+    gem unistall nitos_testbed_rc -a -I --force -x
+
+    if [ "$1" == "--purge" ]; then
+        rm -rf /root/.omf/
+    else
+        rm -rf /root/.omf/etc
+    fi
+
     rm -rf /etc/nitos_testbed_rc
-}
-
-install_ec() {
-    gem install omf_ec --no-ri --no-rdoc
-}
-
-uninstall_ec() {
-    gem unistall omf_ec
+    rm -rf /usr/local/bin/run_ntrc.sh
 }
 
 configure_testbed() {
 
     ##START OF - COPING CONFIGURATION FILES
     echo "###############COPYING CONFIGURATION FILES TO THE RIGHT PLACE###############"
-    cp -rf /etc/dnsmasq.conf /etc/dnsmasq.conf.bkp
+    cp /etc/dnsmasq.conf /etc/dnsmasq.conf.bkp
     cd $INSTALLER_HOME
     cp -r /tmp/testbed-files/* /
     ##END OF - COPING CONFIGURATION FILES
@@ -160,8 +169,17 @@ configure_testbed() {
     ln -s /tftpboot/pxelinux.cfg/pxeconfig /tftpboot/pxelinux.cfg/01-00:03:1d:0c:23:46
     ln -s /tftpboot/pxelinux.cfg/pxeconfig /tftpboot/pxelinux.cfg/01-00:03:1d:0c:47:48
 
+    cp /etc/hosts /etc/hosts.bkp
     cat /root/hosts >> /etc/hosts
+    rm /root/hosts
     #END OF PXE CONFIGURATION
+}
+
+remove_testbed_configuration() {
+    cp /etc/dnsmasq.conf.bkp /etc/dnsmasq.conf
+    rm /etc/dnsmasq.d/testbed.conf
+    rm -rf /root/omf-images
+    rm -rf /root/ec-test
 }
 
 start_broker() {
@@ -178,12 +196,12 @@ insert_nodes() {
     /root/omf_sfa/bin/create_resource -t node -c /root/omf_sfa/bin/conf.yaml -i /root/resources.json
 }
 
-log_broker() {
-    tail -f /var/log/omf-sfa.log
+install_amqp_server() {
+    apt-get install -y --force-yes rabbitmq-server
 }
 
-install_amqp_server() {
-    apt-get install  -y --force-yes rabbitmq-server
+remove_amqp_server() {
+    apt-get remove -y --force-yes --purge rabbitmq-server
 }
 
 download_baseline_image() {
@@ -196,7 +214,11 @@ install_oml2() {
     echo "deb-src http://download.opensuse.org/repositories/home:/cdwertmann:/oml/xUbuntu_14.04/ ./" >> /etc/apt/sources.list
 
     apt-get update
-    apt-get install oml2-server
+    apt-get install -y --force-yes oml2-server
+}
+
+remove_oml2() {
+    apt-get remove -y --force-yes --purge oml2-server
 }
 
 install_testbed() {
@@ -209,7 +231,6 @@ install_testbed() {
     install_broker
     install_nitos_rcs
     configure_testbed
-    #install_ec
 
     service dnsmasq restart
 
@@ -269,6 +290,23 @@ install_testbed() {
     esac
 }
 
+remove_testbed() {
+    echo -n "Do you really want to remove all Testbed components? This will remove all configuration files too. (y/N)"
+    read option
+    case $option in
+        Y|y) ;;
+        N|n) exit ;;
+        *) exit;;
+    esac
+
+    remove_nitos_rcs
+    remove_broker
+    remove_amqp_server
+    remove_omf
+    remove_oml2
+    remove_testbed_configuration
+}
+
 main() {
     echo "------------------------------------------"
     echo "Options:"
@@ -278,12 +316,11 @@ main() {
     echo "3. Install only NITOS Testbed RCs"
     echo "4. Uninstall Broker"
     echo "5. Uninstall NITOS Testbed RCs"
-    echo "6. Insert resources into Broker"
-    echo "7. Install EC"
-    echo "8. Uninstall EC"
-    echo "9. Download baseline.ndz"
-    echo "10. Configure omf_rc on Icarus nodes"
-    echo "11. Exit"
+    echo "6. Uninstall all Testbed components"
+    echo "7. Insert resources into Broker"
+    echo "8. Download baseline.ndz"
+    echo "9. Configure omf_rc on Icarus nodes"
+    echo "10. Exit"
     echo
     echo -n "Choose an option..."
     read option
@@ -291,13 +328,12 @@ main() {
     1) install_testbed ;;
     2) install_broker ;;
     3) install_nitos_rcs ;;
-    4) uninstall_broker ;;
-    5) uninstall_nitos_rcs ;;
-    6) insert_nodes ;;
-    7) install_ec ;;
-    8) uninstall_ec ;;
-    9) download_baseline_image ;;
-    10) $INSTALLER_HOME/configure-icarus.sh ;;
+    4) remove_broker ;;
+    5) remove_nitos_rcs ;;
+    6) remove_testbed ;;
+    7) insert_nodes ;;
+    8) download_baseline_image ;;
+    9) $INSTALLER_HOME/configure-icarus.sh ;;
     *) exit ;;
     esac
 }

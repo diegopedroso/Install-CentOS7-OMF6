@@ -186,6 +186,7 @@ remove_testbed_configuration() {
     rm /etc/dnsmasq.d/testbed.conf
     rm -rf /root/omf-images
     rm -rf /root/ec-test
+    rm -rf /tftpboot
 }
 
 start_broker() {

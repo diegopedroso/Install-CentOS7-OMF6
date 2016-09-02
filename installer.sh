@@ -227,6 +227,8 @@ remove_oml2() {
     apt-get remove -y --force-yes --purge oml2-server
 }
 
+#TODO remove configuration in /etc/hosts
+#TODO remove omf_ec executable script. Note: use which to find it.
 remove_testbed() {
     echo -n "Do you really want to remove all Testbed components? This will remove all configuration files too. (y/N)"
     read option

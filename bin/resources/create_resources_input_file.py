@@ -17,6 +17,7 @@ for line in template_file:
 all_nodes = ""
 
 for idx, line in enumerate(nodes_file):
+    line = line.rstrip()
     if not line.startswith("#") and line:
         node_parts = line.split(", ")
         node = resources_template.replace("<name>", node_parts[0])

@@ -59,9 +59,9 @@ install_omf() {
 }
 
 remove_omf() {
-    gem unistall omf_common -a -I --force -x
-    gem unistall omf_rc -a -I --force -x
-    gem unistall omf_rc -a -I --force -x
+    gem uninstall omf_common -a -I --force -x
+    gem uninstall omf_rc -a -I --force -x
+    gem uninstall omf_rc -a -I --force -x
 }
 
 install_broker() {
@@ -111,7 +111,7 @@ remove_broker() {
     echo "NITOS Testbed RCs will not work without Broker. Do you want to uninstall them too? (Y/n)"
     read option
     case $option in
-        Y|y) unistall_nitos_rcs --purge;;
+        Y|y) uninstall_nitos_rcs --purge;;
         *) ;;
     esac
 }
@@ -142,7 +142,7 @@ install_nitos_rcs() {
 
 remove_nitos_rcs() {
     stop ntrc
-    gem unistall nitos_testbed_rc -a -I --force -x
+    gem uninstall nitos_testbed_rc -a -I --force -x
 
     if [ "$1" == "--purge" ]; then
         rm -rf /root/.omf/

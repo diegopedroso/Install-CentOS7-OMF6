@@ -2,6 +2,7 @@
 
 INSTALLER_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $INSTALLER_HOME/variables.conf
+source $INSTALLER_HOME/util.sh
 
 install_dependencies() {
     echo 'deb http://pkg.mytestbed.net/ubuntu precise/ ' >> /etc/apt/sources.list \
@@ -308,9 +309,11 @@ install_testbed() {
 }
 
 reinstall_testbed() {
-    if [ ! "$(ls -A $OMF_SFA_HOME)" ] || [ ! "$(ls -A /root/.omf)" ]; then
+    printMessage "REMOVING THE TESTBED"
+    if [ -d "$OMF_SFA_HOME" ] || [ -d "/root/.omf" ]; then
         remove_testbed
     fi
+    printMessage "INSTALLING THE TESTBED"
     install_testbed
 }
 

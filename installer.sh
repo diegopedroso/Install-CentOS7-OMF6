@@ -109,12 +109,17 @@ remove_broker() {
     rm -rf /root/.omf/*.pem
     rm -rf /root/.omf/*.pkey
     rm -rf /root/.omf/trusted_roots
-    echo "NITOS Testbed RCs will not work without Broker. Do you want to uninstall them too? (Y/n)"
-    read option
-    case $option in
-        Y|y) uninstall_nitos_rcs --purge;;
-        *) ;;
-    esac
+
+    if [ $1 == "-y" ]; then
+        remove_nitos_rcs --purge
+    else
+        echo "NITOS Testbed RCs will not work without Broker. Do you want to uninstall them too? (Y/n)"
+        read option
+        case $option in
+            Y|y) remove_nitos_rcs --purge;;
+            *) ;;
+        esac
+    fi
 }
 
 install_nitos_rcs() {
@@ -232,7 +237,7 @@ remove_testbed() {
     esac
 
     remove_nitos_rcs
-    remove_broker
+    remove_broker -y
     remove_amqp_server
     remove_omf
     remove_oml2

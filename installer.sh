@@ -62,7 +62,7 @@ install_omf() {
 remove_omf() {
     gem uninstall omf_common -a -I --force -x
     gem uninstall omf_rc -a -I --force -x
-    gem uninstall omf_rc -a -I --force -x
+    gem uninstall omf_ec -a -I --force -x
 }
 
 install_broker() {

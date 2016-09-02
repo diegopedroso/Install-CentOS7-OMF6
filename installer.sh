@@ -221,6 +221,23 @@ remove_oml2() {
     apt-get remove -y --force-yes --purge oml2-server
 }
 
+remove_testbed() {
+    echo -n "Do you really want to remove all Testbed components? This will remove all configuration files too. (y/N)"
+    read option
+    case $option in
+        Y|y) ;;
+        N|n) exit ;;
+        *) exit;;
+    esac
+
+    remove_nitos_rcs
+    remove_broker
+    remove_amqp_server
+    remove_omf
+    remove_oml2
+    remove_testbed_configuration
+}
+
 install_testbed() {
     install_dependencies
 
@@ -290,21 +307,11 @@ install_testbed() {
     esac
 }
 
-remove_testbed() {
-    echo -n "Do you really want to remove all Testbed components? This will remove all configuration files too. (y/N)"
-    read option
-    case $option in
-        Y|y) ;;
-        N|n) exit ;;
-        *) exit;;
-    esac
-
-    remove_nitos_rcs
-    remove_broker
-    remove_amqp_server
-    remove_omf
-    remove_oml2
-    remove_testbed_configuration
+reinstall_testbed() {
+    if [ ! "$(ls -A $OMF_SFA_HOME)" ] || [ ! "$(ls -A /root/.omf)" ]; then
+        remove_testbed
+    fi
+    install_testbed
 }
 
 main() {
@@ -312,28 +319,30 @@ main() {
     echo "Options:"
     echo
     echo "1. Install Testbed"
-    echo "2. Install only Broker"
-    echo "3. Install only NITOS Testbed RCs"
-    echo "4. Uninstall Broker"
-    echo "5. Uninstall NITOS Testbed RCs"
-    echo "6. Uninstall all Testbed components"
-    echo "7. Insert resources into Broker"
-    echo "8. Download baseline.ndz"
-    echo "9. Configure omf_rc on Icarus nodes"
-    echo "10. Exit"
+    echo "2. Uninstall Testbed"
+    echo "3. Reinstall Testbed"
+    echo "4. Install only Broker"
+    echo "5. Uninstall Broker"
+    echo "6. Install only NITOS Testbed RCs"
+    echo "7. Uninstall NITOS Testbed RCs"
+    echo "8. Insert resources into Broker"
+    echo "9. Download baseline.ndz"
+    echo "10. Configure omf_rc on Icarus nodes"
+    echo "11. Exit"
     echo
     echo -n "Choose an option..."
     read option
     case $option in
     1) install_testbed ;;
-    2) install_broker ;;
-    3) install_nitos_rcs ;;
-    4) remove_broker ;;
-    5) remove_nitos_rcs ;;
-    6) remove_testbed ;;
-    7) insert_nodes ;;
-    8) download_baseline_image ;;
-    9) $INSTALLER_HOME/configure-icarus.sh ;;
+    2) remove_testbed ;;
+    3) reinstall_testbed ;;
+    4) install_broker ;;
+    5) remove_broker ;;
+    6) install_nitos_rcs ;;
+    7) remove_nitos_rcs ;;
+    8) insert_nodes ;;
+    9) download_baseline_image ;;
+    10) $INSTALLER_HOME/configure-icarus.sh ;;
     *) exit ;;
     esac
 }

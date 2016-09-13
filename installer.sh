@@ -65,6 +65,21 @@ remove_omf() {
     gem uninstall omf_ec -a -I --force -x
 }
 
+install_openflow_rcs() {
+    cd /root
+    git clone -b master https://github.com/viniciusgb4/omf_rc_openflow.git
+    cd $OMF_OPENFLOW_RCS_HOME
+    gem build omf_rc_openflow.gemspec
+    gem install omf_rc_openflow-*.gem
+
+    cd /root
+    rm -rf $OMF_OPENFLOW_RCS_HOME
+}
+
+remove_openflow_rcs() {
+    gem uninstall omf_rc_openflow -a -I --force -x
+}
+
 install_broker() {
     #if $OMF_SFA_HOME directory does not exist or is empty
     if [ ! "$(ls -A $OMF_SFA_HOME)" ] || [ ! "$(ls -A /root/.omf)" ]; then
@@ -353,6 +368,8 @@ main() {
     8) insert_nodes ;;
     9) download_baseline_image ;;
     10) $INSTALLER_HOME/configure-icarus.sh ;;
+    11) install_openflow_rcs ;;
+    12) remove_openflow_rcs ;;
     *) exit ;;
     esac
 }

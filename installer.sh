@@ -72,12 +72,18 @@ install_openflow_rcs() {
     gem build omf_rc_openflow.gemspec
     gem install omf_rc_openflow-*.gem
 
+    install_openflow_rcs
+
     cd /root
     rm -rf $OMF_OPENFLOW_RCS_HOME
 }
 
 remove_openflow_rcs() {
     gem uninstall omf_rc_openflow -a -I --force -x
+
+    rm -rf /etc/omf_rc/flowvisor_proxy_conf.yaml
+    rm -rf /etc/omf_rc/ovs_proxy_conf.yaml
+    rm -rf /usr/local/bin/run_openflow_rcs.sh
 }
 
 install_broker() {

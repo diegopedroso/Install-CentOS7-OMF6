@@ -353,7 +353,9 @@ main() {
     echo "8. Insert resources into Broker"
     echo "9. Download baseline.ndz"
     echo "10. Configure omf_rc on Icarus nodes"
-    echo "11. Exit"
+    echo "11. Install openflow related rcs"
+    echo "12. Uninstall openflow related rcs"
+    echo "13. Exit"
     echo
     echo -n "Choose an option..."
     read option

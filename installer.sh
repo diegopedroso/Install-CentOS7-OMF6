@@ -84,6 +84,7 @@ remove_openflow_rcs() {
     rm -rf /etc/omf_rc/flowvisor_proxy_conf.yaml
     rm -rf /etc/omf_rc/ovs_proxy_conf.yaml
     rm -rf /usr/local/bin/run_openflow_rcs.sh
+    rm -rf /usr/local/bin/run_openflow_proxies
 }
 
 install_broker() {

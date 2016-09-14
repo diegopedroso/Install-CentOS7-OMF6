@@ -65,7 +65,7 @@ remove_omf() {
     gem uninstall omf_ec -a -I --force -x
 }
 
-install_openflow_rcs() {
+install_openflow_related_rcs() {
     cd /root
     git clone -b master https://github.com/viniciusgb4/omf_rc_openflow.git
     cd $OMF_OPENFLOW_RCS_HOME
@@ -377,7 +377,7 @@ main() {
     8) insert_nodes ;;
     9) download_baseline_image ;;
     10) $INSTALLER_HOME/configure-icarus.sh ;;
-    11) install_openflow_rcs ;;
+    11) install_openflow_related_rcs ;;
     12) remove_openflow_rcs ;;
     *) exit ;;
     esac

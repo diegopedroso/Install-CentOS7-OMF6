@@ -72,6 +72,7 @@ install_openflow_related_rcs() {
     gem build omf_rc_openflow.gemspec
     gem install omf_rc_openflow-*.gem
 
+    #this installation file comes from the omf_rc_openflow gem
     install_openflow_rcs
 
     cd /root

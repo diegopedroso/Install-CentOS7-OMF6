@@ -41,6 +41,10 @@ install_dependencies() {
 }
 
 install_omf() {
+    if [ $1 == "--install_dependencies" ]; then
+        install_dependencies
+    fi
+
     cd /root
     git clone -b amqp https://github.com/viniciusgb4/omf.git
     cd $OMF_COMMON_HOME
@@ -363,7 +367,8 @@ main() {
     echo "10. Configure omf_rc on Icarus nodes"
     echo "11. Install openflow related rcs"
     echo "12. Uninstall openflow related rcs"
-    echo "13. Exit"
+    echo "13. Install OMF"
+    echo "14. Exit"
     echo
     echo -n "Choose an option..."
     read option
@@ -380,6 +385,7 @@ main() {
     10) $INSTALLER_HOME/configure-icarus.sh ;;
     11) install_openflow_related_rcs ;;
     12) remove_openflow_rcs ;;
+    13) install_omf "--install_dependencies" ;;
     *) exit ;;
     esac
 }

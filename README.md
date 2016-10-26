@@ -22,7 +22,7 @@ To maintain a pattern, use the root user and clone the project at **/root**.
 
     $apt-get install git
     $cd /root
-    $git clone -b amqp https://github.com/viniciusgb4/omf6-testbed.git
+    $git clone -b amqp https://github.com/LABORA-UFG/omf6-testbed.git
 
 Configuration
 -------------

@@ -46,7 +46,7 @@ install_omf() {
     fi
 
     cd /root
-    git clone -b amqp https://github.com/viniciusgb4/omf.git
+    git clone -b amqp https://github.com/LABORA-UFG/omf.git
     cd $OMF_COMMON_HOME
     gem build omf_common.gemspec
     gem install omf_common-*.gem
@@ -54,6 +54,8 @@ install_omf() {
     cd $OMF_RC_HOME
     gem build omf_rc.gemspec
     gem install omf_rc-*.gem
+
+    install_omf_rc -i -c
 
     cd $OMF_EC_HOME
     gem build omf_ec.gemspec
@@ -71,7 +73,7 @@ remove_omf() {
 
 install_openflow_related_rcs() {
     cd /root
-    git clone -b master https://github.com/viniciusgb4/omf_rc_openflow.git
+    git clone -b master https://github.com/LABORA-UFG/omf_rc_openflow.git
     cd $OMF_OPENFLOW_RCS_HOME
     gem build omf_rc_openflow.gemspec
     gem install omf_rc_openflow-*.gem
@@ -101,7 +103,7 @@ install_broker() {
         cd /root
         echo $(pwd)
         echo $OMF_SFA_HOME
-        git clone -b amqp https://github.com/viniciusgb4/omf_sfa.git
+        git clone -b amqp https://github.com/LABORA-UFG/omf_sfa.git
         cd $OMF_SFA_HOME
         echo "###############INSTALLING OMF_SFA###############"
         bundle install
@@ -154,7 +156,7 @@ install_nitos_rcs() {
         #Start of NITOS Testbed RCs installation
         echo "###############INSTALLING NITOS TESTBED RCS###############"
         cd /root
-        git clone -b amqp https://github.com/viniciusgb4/nitos_testbed_rc.git
+        git clone -b amqp https://github.com/LABORA-UFG/nitos_testbed_rc.git
         cd $NITOS_HOME
         gem build nitos_testbed_rc.gemspec
         gem install nitos_testbed_rc-2.0.5.gem

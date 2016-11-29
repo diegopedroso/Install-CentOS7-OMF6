@@ -4,23 +4,17 @@ INSTALLER_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $INSTALLER_HOME/variables.conf
 source $INSTALLER_HOME/util.sh
 
-install_dependencies() {
+install_all_dependencies() {
     echo 'deb http://pkg.mytestbed.net/ubuntu precise/ ' >> /etc/apt/sources.list \
     && apt-get update
     apt-get install -y --force-yes --reinstall \
-       build-essential \
        curl \
        dnsmasq \
-       frisbee \
        git \
        libsqlite3-dev \
        libreadline6-dev \
-       libssl-dev \
        libyaml-dev \
-       libxml2-dev \
        libxmlsec1-dev \
-       libxslt-dev \
-       links2 \
        ntp \
        python \
        syslinux \
@@ -28,25 +22,139 @@ install_dependencies() {
        wget \
        zlib1g-dev
 
+       install_virtinst
+       install_frisbee
+       install_omf_dependencies
+       install_ruby
+}
+
+install_virtinst() {
+    apt-get install -y --force-yes --reinstall virtinst
+}
+
+install_frisbee() {
+    echo 'deb http://pkg.mytestbed.net/ubuntu precise/ ' >> /etc/apt/sources.list \
+    && apt-get update
+    apt-get install -y --force-yes --reinstall \
+       frisbee
+}
+
+install_omf_dependencies() {
+    check_and_install_ruby
+    apt-get install -y --force-yes --reinstall \
+        build-essential \
+        libssl-dev
+}
+
+check_and_install_ruby() {
+    if [ ! "$(which ruby)" ]; then
+        install_ruby
+    elif [[ "$(ruby -v)" != *$RUBY_VERSION* ]]; then
+        echo "This machine has a ruby installation with version:"
+        ruby -v
+        echo "Do you want to substitute it by version $RUBY_VERSION? (Y/n)"
+        read option
+        case $option in
+            Y|y) check_before_remove_ruby && install_ruby;;
+            *) ;;
+        esac
+    fi
+}
+
+install_ruby() {
     cd /tmp \
-       && wget http://ftp.ruby-lang.org/pub/ruby/2.2/ruby-2.2.3.tar.gz \
-       && tar -xvzf ruby-2.2.3.tar.gz \
-       && cd ruby-2.2.3/ \
-       && ./configure --prefix=/usr/local \
-       && make \
-       && make install \
-       && rm -rf /tmp/ruby
+           && wget http://ftp.ruby-lang.org/pub/ruby/2.3/ruby-2.3.2.tar.gz \
+           && tar -xvzf ruby-2.3.2.tar.gz \
+           && cd ruby-2.3.2/ \
+           && ./configure --prefix=/usr/local \
+           && make \
+           && make install \
+           && rm -rf /tmp/ruby
 
     gem install bundler --no-ri --no-rdoc
 }
 
+check_before_remove_ruby() {
+    echo "Are you sure you want to remove ruby? (Y/n)"
+    read option
+    case $option in
+        Y|y) remove_ruby;;
+        *) ;;
+    esac
+}
+
+remove_ruby() {
+    rm -rf /usr/local/lib/ruby
+    rm -rf /usr/lib/ruby
+    rm -f /usr/local/bin/ruby
+    rm -f /usr/bin/ruby
+    rm -f /usr/local/bin/irb
+    rm -f /usr/bin/irb
+    rm -f /usr/local/bin/gem
+    rm -f /usr/bin/gem
+}
+
+download_omf() {
+    if [ ! "$(ls -A $OMF_HOME)" ]; then
+        cd /root
+        git clone -b amqp https://github.com/LABORA-UFG/omf.git
+    fi
+}
+
 install_omf() {
     if [ $1 == "--install_dependencies" ]; then
-        install_dependencies
+        install_all_dependencies
     fi
 
+    download_omf
+
+    #Install omf_common
+    install_omf_common_gem
+
+    #Install omf_rc
+    install_omf_rc_gem
+
+    #Install omf_ec
+    install_omf_ec_gem
+
     cd /root
-    git clone -b amqp https://github.com/LABORA-UFG/omf.git
+    rm -rf $OMF_HOME
+}
+
+install_omf_common_gem() {
+    if [ $1 == "--install_dependencies" ]; then
+        install_all_dependencies
+    fi
+
+    download_omf
+
+    cd $OMF_COMMON_HOME
+    gem build omf_common.gemspec
+    gem install omf_common-*.gem
+
+}
+
+install_omf_rc_dependencies() {
+    install_omf_dependencies
+    install_virtinst
+}
+
+install_omf_rc_dependencies() {
+    check_and_install_ruby
+    install_virtinst
+}
+
+install_omf_rc_gem() {
+    if [ $1 == "--install_dependencies" ]; then
+        install_virtinst
+    fi
+
+    if [ $1 == "--install_omf_common" ]; then
+        install_virtinst
+    fi
+
+    download_omf
+
     cd $OMF_COMMON_HOME
     gem build omf_common.gemspec
     gem install omf_common-*.gem
@@ -55,14 +163,31 @@ install_omf() {
     gem build omf_rc.gemspec
     gem install omf_rc-*.gem
 
-    install_omf_rc -i -c
+    install_omf_ec -i -c
+
+}
+
+install_omf_ec_gem() {
+    if [ $1 == "--install_dependencies" ]; then
+        install_all_dependencies
+    fi
+
+    download_omf
+
+    if ! gem list omf_common -i; then
+        install_omf_common_gem
+    fi
+
+    cd $OMF_COMMON_HOME
+    gem build omf_common.gemspec
+    gem install omf_common-*.gem
 
     cd $OMF_EC_HOME
     gem build omf_ec.gemspec
     gem install omf_ec-*.gem
 
-    cd /root
-    rm -rf $OMF_HOME
+    install_omf_ec -i -c
+
 }
 
 remove_omf() {
@@ -276,7 +401,7 @@ remove_testbed() {
 }
 
 install_testbed() {
-    install_dependencies
+    install_all_dependencies
 
     $INSTALLER_HOME/configure.sh
 
@@ -370,7 +495,9 @@ main() {
     echo "11. Install openflow related rcs"
     echo "12. Uninstall openflow related rcs"
     echo "13. Install OMF"
-    echo "14. Exit"
+    echo "14. Install OMF RC"
+    echo "15. Install OMF EC"
+    echo "16. Exit"
     echo
     echo -n "Choose an option..."
     read option
@@ -388,6 +515,8 @@ main() {
     11) install_openflow_related_rcs ;;
     12) remove_openflow_rcs ;;
     13) install_omf "--install_dependencies" ;;
+    14) install_omf_rc_gem "--install_dependencies" ;;
+    15) install_omf_ec_gem "--install_dependencies" ;;
     *) exit ;;
     esac
 }

@@ -123,7 +123,7 @@ install_omf() {
 
 install_omf_common_gem() {
     if [ $1 == "--install_dependencies" ]; then
-        install_all_dependencies
+        install_omf_dependencies
     fi
 
     download_omf
@@ -134,30 +134,27 @@ install_omf_common_gem() {
 
 }
 
-install_omf_rc_dependencies() {
+install_omf_ec_dependencies() {
+    check_and_install_ruby
     install_omf_dependencies
-    install_virtinst
 }
 
 install_omf_rc_dependencies() {
     check_and_install_ruby
+    install_omf_dependencies
     install_virtinst
 }
 
 install_omf_rc_gem() {
     if [ $1 == "--install_dependencies" ]; then
-        install_virtinst
+        install_omf_rc_dependencies
     fi
 
-    if [ $1 == "--install_omf_common" ]; then
-        install_virtinst
+    if [ ! $(gem list -i omf_common) ]; then
+        install_omf_common_gem
     fi
 
     download_omf
-
-    cd $OMF_COMMON_HOME
-    gem build omf_common.gemspec
-    gem install omf_common-*.gem
 
     cd $OMF_RC_HOME
     gem build omf_rc.gemspec
@@ -169,12 +166,12 @@ install_omf_rc_gem() {
 
 install_omf_ec_gem() {
     if [ $1 == "--install_dependencies" ]; then
-        install_all_dependencies
+        install_omf_ec_dependencies
     fi
 
     download_omf
 
-    if ! gem list omf_common -i; then
+    if [ ! $(gem list -i omf_common) ]; then
         install_omf_common_gem
     fi
 
@@ -279,6 +276,7 @@ remove_broker() {
 install_nitos_rcs() {
     if ! gem list nitos_testbed_rc -i; then
         #Start of NITOS Testbed RCs installation
+        install_frisbee
         echo "###############INSTALLING NITOS TESTBED RCS###############"
         cd /root
         git clone -b amqp https://github.com/LABORA-UFG/nitos_testbed_rc.git

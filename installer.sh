@@ -29,6 +29,7 @@ install_all_dependencies() {
 }
 
 install_virtinst() {
+    apt-get update
     apt-get install -y --force-yes --reinstall virtinst
 }
 
@@ -56,20 +57,42 @@ check_and_install_ruby() {
         read option
         case $option in
             Y|y) check_before_remove_ruby && install_ruby;;
-            *) ;;
+            N|n) ;;
+            *) check_before_remove_ruby && install_ruby;;
         esac
     fi
 }
 
 install_ruby() {
-    cd /tmp \
-           && wget http://ftp.ruby-lang.org/pub/ruby/2.3/ruby-2.3.2.tar.gz \
-           && tar -xvzf ruby-2.3.2.tar.gz \
-           && cd ruby-2.3.2/ \
-           && ./configure --prefix=/usr/local \
-           && make \
-           && make install \
-           && rm -rf /tmp/ruby
+    apt-get update
+    apt-get install -y --force-yes git-core \
+        curl \
+        zlib1g-dev \
+        build-essential \
+        libssl-dev \
+        libreadline-dev \
+        libyaml-dev \
+        libsqlite3-dev \
+        sqlite3 \
+        libxml2-dev \
+        libxslt1-dev \
+        libcurl4-openssl-dev \
+        python-software-properties \
+        libffi-dev
+
+    cd
+    git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+    echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+    exec $SHELL
+
+    git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+    echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
+    exec $SHELL
+
+    rbenv install 2.3.2
+    rbenv global 2.3.2
+    ruby -v
 
     gem install bundler --no-ri --no-rdoc
 }
@@ -135,6 +158,7 @@ install_omf_common_gem() {
 }
 
 install_omf_basic_dependencies() {
+    apt-get update
     check_and_install_ruby
     install_omf_dependencies
 }

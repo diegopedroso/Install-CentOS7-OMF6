@@ -1,6 +1,3 @@
-omf6-testbed
-============
-
 This project has a set of scripts and configuration files to install all necessary modules to create a complete omf6 testbed.
 
 Installation Guide
@@ -62,7 +59,8 @@ The following options will be prompted. To choose an option you have just to wri
     13. Install OMF
     14. Install OMF RC
     15. Install OMF EC
-    16. Exit
+    16. Install Flowvisor RC
+    17. Exit
     
     Choose an option...
     

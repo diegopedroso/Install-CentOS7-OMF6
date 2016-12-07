@@ -134,14 +134,13 @@ install_omf_common_gem() {
 
 }
 
-install_omf_ec_dependencies() {
+install_omf_basic_dependencies() {
     check_and_install_ruby
     install_omf_dependencies
 }
 
 install_omf_rc_dependencies() {
-    check_and_install_ruby
-    install_omf_dependencies
+    install_omf_basic_dependencies
     install_virtinst
 }
 
@@ -166,7 +165,7 @@ install_omf_rc_gem() {
 
 install_omf_ec_gem() {
     if [ $1 == "--install_dependencies" ]; then
-        install_omf_ec_dependencies
+        install_omf_basic_dependencies
     fi
 
     download_omf
@@ -194,6 +193,10 @@ remove_omf() {
 }
 
 install_openflow_related_rcs() {
+    if [ $1 == "--install_dependencies" ]; then
+        install_omf_basic_dependencies
+    fi
+
     cd /root
     git clone -b master https://github.com/LABORA-UFG/omf_rc_openflow.git
     cd $OMF_OPENFLOW_RCS_HOME
@@ -202,6 +205,24 @@ install_openflow_related_rcs() {
 
     #this installation file comes from the omf_rc_openflow gem
     install_openflow_rcs
+
+    cd /root
+    rm -rf $OMF_OPENFLOW_RCS_HOME
+}
+
+install_flowvisor_rc_gem() {
+    if [ $1 == "--install_dependencies" ]; then
+        install_omf_basic_dependencies
+    fi
+
+    cd /root
+    git clone -b master https://github.com/LABORA-UFG/omf_rc_openflow.git
+    cd $OMF_OPENFLOW_RCS_HOME
+    gem build omf_rc_openflow.gemspec
+    gem install omf_rc_openflow-*.gem
+
+    #this installation file comes from the omf_rc_openflow gem
+    install_flowvisor_rc -i -c
 
     cd /root
     rm -rf $OMF_OPENFLOW_RCS_HOME
@@ -495,7 +516,8 @@ main() {
     echo "13. Install OMF"
     echo "14. Install OMF RC"
     echo "15. Install OMF EC"
-    echo "16. Exit"
+    echo "16. Install Flowvisor RC"
+    echo "17. Exit"
     echo
     echo -n "Choose an option..."
     read option
@@ -510,11 +532,12 @@ main() {
     8) insert_nodes ;;
     9) download_baseline_image ;;
     10) $INSTALLER_HOME/configure-icarus.sh ;;
-    11) install_openflow_related_rcs ;;
+    11) install_openflow_related_rcs "--install_dependencies" ;;
     12) remove_openflow_rcs ;;
     13) install_omf "--install_dependencies" ;;
     14) install_omf_rc_gem "--install_dependencies" ;;
     15) install_omf_ec_gem "--install_dependencies" ;;
+    16) install_flowvisor_rc_gem "--install_dependencies" ;;
     *) exit ;;
     esac
 }

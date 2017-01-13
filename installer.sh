@@ -25,7 +25,7 @@ install_all_dependencies() {
        install_virtinst
        install_frisbee
        install_omf_dependencies
-       install_ruby
+       check_and_install_ruby
 }
 
 install_virtinst() {

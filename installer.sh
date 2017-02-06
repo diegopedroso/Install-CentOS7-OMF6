@@ -183,7 +183,7 @@ install_omf_rc_gem() {
     gem build omf_rc.gemspec
     gem install omf_rc-*.gem
 
-    install_omf_ec -i -c
+    install_omf_rc -i -c
 
 }
 
@@ -205,9 +205,6 @@ install_omf_ec_gem() {
     cd $OMF_EC_HOME
     gem build omf_ec.gemspec
     gem install omf_ec-*.gem
-
-    install_omf_ec -i -c
-
 }
 
 remove_omf() {

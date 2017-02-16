@@ -259,6 +259,9 @@ remove_openflow_rcs() {
 }
 
 install_broker() {
+    if [ $1 == "--install_dependencies" ]; then
+        install_omf_basic_dependencies
+    fi
     #if $OMF_SFA_HOME directory does not exist or is empty
     if [ ! "$(ls -A $OMF_SFA_HOME)" ] || [ ! "$(ls -A /root/.omf)" ]; then
         echo "###############INSTALLATION OF THE MODULES###############"
@@ -546,7 +549,7 @@ main() {
     1) install_testbed ;;
     2) remove_testbed ;;
     3) reinstall_testbed ;;
-    4) install_broker ;;
+    4) install_broker "--install_dependencies" ;;
     5) remove_broker ;;
     6) install_nitos_rcs ;;
     7) remove_nitos_rcs ;;

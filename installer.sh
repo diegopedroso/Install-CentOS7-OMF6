@@ -261,6 +261,7 @@ remove_openflow_rcs() {
 install_broker() {
     if [ $1 == "--install_dependencies" ]; then
         install_all_dependencies
+        install_omf_common_gem
     fi
     #if $OMF_SFA_HOME directory does not exist or is empty
     if [ ! "$(ls -A $OMF_SFA_HOME)" ] || [ ! "$(ls -A /root/.omf)" ]; then

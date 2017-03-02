@@ -25,12 +25,18 @@ omf_sfa_am:
       password: lab251
       server: <domain>
       pubsub_opt:
-        require: omf-sfa/am/am-amqp/am_amqp
-        constructor: OMF::SFA::AM::AMQP::AMController
+        :require: omf-sfa/am/am-amqp/am_amqp
+        :constructor: OMF::SFA::AM::AMQP::AMController
       auth:
         :entity_cert: ~/.omf/am.pem
         :entity_key: ~/.omf/am.pkey
         :root_cert_dir: ~/.omf/trusted_roots
+
+  security:
+    trusted_roots: ~/.omf/trusted_roots
+
+  rest_authorization:
+    type: fibre
 
   mapping_submodule:
       require: omf-sfa/am/mapping_submodule
@@ -43,3 +49,11 @@ omf_sfa_am:
   am_policies:
       require: omf-sfa/am/am_policies
       constructor: OMF::SFA::AM::AMPolicies
+
+  central_broker:
+      enabled: false
+      subauthorities:
+          domain:  omf:nitos
+          address: https://nitlab.inf.uth.gr:8001/
+          cert:    /root/.omf/central_broker_certs/nitlab_user_cert.pem
+          key:     /root/.omf/central_broker_certs/nitlab_user_cert.pkey

@@ -83,7 +83,8 @@ install_ruby() {
         libtool \
         bison \
         pkg-config \
-        libffi-dev
+        libffi-dev \
+        wget
 
     cd /tmp \
            && wget http://ftp.ruby-lang.org/pub/ruby/2.3/ruby-2.3.2.tar.gz \

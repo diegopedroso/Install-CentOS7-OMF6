@@ -34,10 +34,10 @@ install_virtinst() {
 }
 
 install_frisbee() {
-    echo 'deb http://pkg.mytestbed.net/ubuntu precise/ ' >> /etc/apt/sources.list \
-    && apt-get update
-    apt-get install -y --force-yes --reinstall \
-       frisbee
+    #echo 'deb http://pkg.mytestbed.net/ubuntu precise/ ' >> /etc/apt/sources.list \
+    #&& apt-get update
+    #apt-get install -y --force-yes --reinstall \
+    #   frisbee
 }
 
 install_omf_dependencies() {

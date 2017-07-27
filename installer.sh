@@ -34,6 +34,7 @@ install_virtinst() {
 }
 
 install_frisbee() {
+    echo "skipping frisbee installation..."
     #echo 'deb http://pkg.mytestbed.net/ubuntu precise/ ' >> /etc/apt/sources.list \
     #&& apt-get update
     #apt-get install -y --force-yes --reinstall \

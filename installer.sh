@@ -5,8 +5,8 @@ source $INSTALLER_HOME/variables.conf
 source $INSTALLER_HOME/util.sh
 
 install_all_dependencies() {
-    echo 'deb http://pkg.mytestbed.net/ubuntu precise/ ' >> /etc/apt/sources.list \
-    && apt-get update
+    #echo 'deb http://pkg.mytestbed.net/ubuntu precise/ ' >> /etc/apt/sources.list \
+    apt-get update
     apt-get install -y --force-yes --reinstall \
        curl \
        dnsmasq \

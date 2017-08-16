@@ -120,10 +120,11 @@ remove_ruby() {
 }
 
 download_omf() {
-    if [ ! "$(ls -A $OMF_HOME)" ]; then
-        cd /root
-        git clone -b amqp https://github.com/LABORA-UFG/omf.git
+    cd /root
+    if [ "$(ls -A $OMF_HOME)" ]; then
+        rm -rf $OMF_HOME
     fi
+    git clone -b amqp https://github.com/LABORA-UFG/omf.git
 }
 
 install_omf() {
@@ -141,9 +142,6 @@ install_omf() {
 
     #Install omf_ec
     install_omf_ec_gem
-
-    cd /root
-    rm -rf $OMF_HOME
 }
 
 install_omf_common_gem() {
@@ -175,7 +173,10 @@ install_omf_rc_gem() {
         install_omf_rc_dependencies
     fi
 
-    if [ ! $(gem list -i omf_common) ]; then
+    omf_common_installed=$(gem list -i omf_common)
+    echo "OMF Common already installed? $omf_common_installed"
+    if [ "$omf_common_installed" == "false" ]; then
+        echo "INSTALLING OMF COMMON GEM"
         install_omf_common_gem
     fi
 

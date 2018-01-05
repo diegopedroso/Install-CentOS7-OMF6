@@ -4,7 +4,9 @@
 environment: production
 
 communication:
-  url: amqp://testbed:testbed@<control_network>
+  url: amqp://<control_network>
+  user: testbed
+  password: testbed
 
 resources:
 - type: node

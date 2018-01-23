@@ -1,6 +1,6 @@
 #! /bin/bash
 
-yum update
+yum -y update
 yum -y install curl
 yum -y install dnsmasq
 yum -y install zlib-devel
@@ -22,4 +22,4 @@ yum -y install virt-install
 yum -y groupinstall 'Development Tools'
 yum -y install libssl-devel
 yum -y install openssl-devel
-yum install gcc-c++ 
+yum -y install gcc-c++ 

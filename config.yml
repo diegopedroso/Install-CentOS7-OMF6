@@ -1,0 +1,22 @@
+---
+# default topic name is this machine's hostname
+# this is to ensure that every RC has its own topic and AMQP account
+environment: production
+
+communication:
+  url: amqp://192.168.88.107
+  user: testbed
+  password: testbed
+
+resources:
+- type: switch
+  uid: vm-fibre-ovs
+  stype: "ovs"
+  ip_address: "192.168.88.107"
+  user: root
+  port: 22
+  key_file: "/root/.ssh/id_rsa"
+  ovs_bin_dir: "/usr/bin/"
+  bridge: ovs-br
+- type: host
+  uid: vm-fibre-host
